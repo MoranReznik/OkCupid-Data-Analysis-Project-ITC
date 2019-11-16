@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import pycountry
+
 
 SITE_URL = "https://www.okcupid.com"
 LOGIN_URL = "https://www.okcupid.com/login"
@@ -98,7 +98,16 @@ def find_kind_of_detail(string):
                       'Full figured'],
         'Ethnicity': ['Asian', 'Black', 'Hispanic / Latin', 'Indian', 'Middle Eastern', 'Native American',
                       'Pacific Islander', 'White', 'Other'],
-        # speaks = [['Hebrew', 'English', 'French', 'Russian', 'Arabic'], 'Speaks']
+        'speaks': ['English', 'Afrikaans', 'Albanian', 'Arabic', 'Armenian', 'Basque', 'Belarusian', 'Bengali',
+                   'Breton', 'Bulgarian', 'Catalan', 'Cebuano', 'Chechen', 'Chinese', 'Chinese (Cantonese)',
+                   'Chinese (Mandarin)', 'C++', 'Croatian', 'Czech', 'Danish', 'Dutch', 'Esperanto', 'Estonian',
+                   'Finnish', 'French', 'Frisian', 'Georgian', 'German', 'Greek', 'Gujarati', 'Ancient Greek',
+                   'Hawaiian', 'Hebrew', 'Hindi', 'Hungarian', 'Icelandic', 'Ilongo', 'Indonesian', 'Irish', 'Italian',
+                   'Japanese', 'Khmer', 'Korean', 'Latin', 'Latvian', 'LISP', 'Lithuanian', 'Malay', 'Maori',
+                   'Mongolian', 'Norwegian', 'Occitan', 'Other', 'Persian', 'Polish', 'Portuguese', 'Punjabi',
+                   'Romanian', 'Rotuman', 'Russian', 'Sanskrit', 'Sardinian', 'Serbian', 'Sign Language', 'Slovak',
+                   'Slovenian', 'Spanish', 'Swahili', 'Swedish', 'Tagalog', 'Tamil', 'Thai', 'Tibetan', 'Turkish',
+                   'Ukrainian', 'Urdu', 'Vietnamese', 'Welsh', 'Yiddish'],
         'Politics': ['Politically liberal', 'Politically moderate', 'Politically conservative'],
         'Education': ['High school', 'Two-year college', 'University', 'Post-grad'],
         'Religion': ['Agnostic', 'Atheist', 'Christian', 'Jewish', 'Catholic', 'Islamic', 'Hindu',
@@ -118,11 +127,6 @@ def find_kind_of_detail(string):
                                'Non-binaries', 'Others', 'Pangenders', 'Transfeminines', 'Transgenders',
                                'Transmasculines', 'Transsexuals', 'Trans Men', 'Trans Women', 'Two Spirits'],
         "Looking for connection": ["short", "long", "hookups", "new friends"]}
-
-    languages = []
-    for language in pycountry.languages:
-        languages.append(language.name)
-    choices['Speaks'] = languages
 
     for key, values in choices.items():
         for value in values:
