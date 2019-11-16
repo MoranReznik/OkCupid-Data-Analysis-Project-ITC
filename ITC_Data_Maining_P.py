@@ -1,3 +1,8 @@
+
+# coding: utf-8
+
+# In[48]:
+
 import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -10,7 +15,7 @@ SITE_URL = "https://www.okcupid.com"
 LOGIN_URL = "https://www.okcupid.com/login"
 CHROME_DRIVER_PATH = "chromedriver.exe"
 HOME_URL = "https://www.okcupid.com/home"
-PAGES = 10
+PAGES = 30
 
 
 def site_login():
@@ -38,6 +43,7 @@ def enter_profile(driver):
 
 def wait_for_profile_to_load(driver):
     """ wait for all relevant classes and ids to be loaded before we try t scrape the page """
+    
     class_list = ["profile-basics-username", "profile-basics-asl-age", "profile-basics-asl-location",
                   "matchprofile-details-text"]
     id_list = ["pass-button"]
@@ -65,15 +71,48 @@ def scrape_profile(driver):
     data = {'Name': name, 'Age': age, 'Location': location}
 
     details_temp = [detail.get_text() for detail in soup.find_all(class_="matchprofile-details-text")]
+ 
     for detail in details_temp:
         details += detail.split(',')
 
     for detail in details:
         kind = find_kind_of_detail(detail.strip())
-        if kind:
+        
+        if kind == 'speaks':
+            detail = detail[7:]
+            languages = detail.replace('and', ',')
+            languages = languages.replace(', some', ',')
+            languages = languages.split(',')
+            for i,l in enumerate(languages):
+                languages[i] = l.strip(' ')
+            data[kind] = languages
+            
+        elif kind == 'Religion':
+            detail = detail.split(' (')
+            if len(detail)>1:
+                data['Religion'] = detail[0]
+                data['Religion importence'] = detail[1][:-1]
+            else:
+                data['Religion'] = detail[0]
+        
+        elif kind == 'Looking for gender':
+            detail = detail[12:]
+            detail = detail.replace("short-term",'short')
+            detail = detail.replace("long-term",'short')
+            detail = detail.replace(".",'')
+            detail = detail.split(' ')
+            print(detail)
+            connection = [i for i in detail if i in ["short", "long", "hookups", "friends"]]
+            gender = [i for i in detail if i in ['men', 'women', 'agenders', 'androgynes', 'bigenders', 'cis Men', 'cis Women',
+                               'genderfluids', 'genderqueers', 'genders nonconforming', 'hijras', 'intersexes',
+                               'non-binaries', 'others', 'pangenders', 'transfeminines', 'transgenders',
+                               'transmasculines', 'transsexuals', 'trans Men', 'trans Women', 'two Spirits']]
+            data["Looking for gender"] = gender
+            data["Looking for connection"] = connection
+            
+        elif kind:
             data[kind] = detail.strip()
-    print(data)  # we will remove this later on  ##############################################################
-
+    print(data)
     driver.find_elements_by_id("pass-button")[1].send_keys('\n')
     driver.get(HOME_URL)
     return driver, data
@@ -87,17 +126,24 @@ def find_kind_of_detail(string):
     choices = {
         'Sexual Orientation': ['Straight', 'Gay', 'Bisexual', 'Asexual', 'Demisexual', 'Lesbian', 'Pansexual', 'Queer',
                                'Questioning', 'Sapiosexual'],
+        
         'Gender': ['Woman', 'Man', 'Agender', 'Androgynous', 'Bigender', 'Cis Man', 'Cis Woman', 'Genderfluid',
                    'Genderqueer', 'Gender Nonconforming', 'Hijra', 'Intersex', 'Non-binary', 'Other', 'Pangender',
                    'Transfeminine', 'Transgender', 'Transmasculine', 'Transsexual', 'Trans Man', 'Trans Woman',
                    'Two Spirit'],
+        
         'Status': ['Single', 'Seeing Someone', 'Married'],
+        
         'Relationship Type': ['Monogamous', 'Non-monogamous'],
+        
         'Height': ["3'", "4'", "5'", "6'", "7'"],
+        
         'Body Type': ['Thin', 'Overweight', 'Average Build', 'Fit', 'Jacked', 'A little extra', 'Curvy',
                       'Full figured'],
+        
         'Ethnicity': ['Asian', 'Black', 'Hispanic / Latin', 'Indian', 'Middle Eastern', 'Native American',
                       'Pacific Islander', 'White', 'Other'],
+        
         'speaks': ['English', 'Afrikaans', 'Albanian', 'Arabic', 'Armenian', 'Basque', 'Belarusian', 'Bengali',
                    'Breton', 'Bulgarian', 'Catalan', 'Cebuano', 'Chechen', 'Chinese', 'Chinese (Cantonese)',
                    'Chinese (Mandarin)', 'C++', 'Croatian', 'Czech', 'Danish', 'Dutch', 'Esperanto', 'Estonian',
@@ -108,24 +154,38 @@ def find_kind_of_detail(string):
                    'Romanian', 'Rotuman', 'Russian', 'Sanskrit', 'Sardinian', 'Serbian', 'Sign Language', 'Slovak',
                    'Slovenian', 'Spanish', 'Swahili', 'Swedish', 'Tagalog', 'Tamil', 'Thai', 'Tibetan', 'Turkish',
                    'Ukrainian', 'Urdu', 'Vietnamese', 'Welsh', 'Yiddish'],
+        
         'Politics': ['Politically liberal', 'Politically moderate', 'Politically conservative'],
+        
         'Education': ['High school', 'Two-year college', 'University', 'Post-grad'],
+        
         'Religion': ['Agnostic', 'Atheist', 'Christian', 'Jewish', 'Catholic', 'Islamic', 'Hindu',
                      'Buddhist', 'Sikh'],
+        
         'Tobacco': ['Smokes cigarettes regularly', 'Smokes cigarettes sometimes', "Doesn't smoke cigarettes"],
+        
         'Drinks': ['Drinks regularly', 'Drinks sometimes', 'Never drinks'],
+        
         'Drugs': ['Does drugs regularly', 'Does drugs sometimes', "Doesn’t do drugs"],
+        
         'Marijuana': ['Smokes marijuana regularly', 'Smokes marijuana sometimes', 'Never smokes marijuana'],
+        
         'Kids': ['Has Kid(s)', "Doesn’t have kids", "Wants kids"],
+        
         'Pets': ['Has dogs', 'Has cats'],
+        
         'Sign': ['Aquarius', 'Pisces', 'Aries', 'Taurus', 'Gemini', 'Cancer', 'leo', 'Virgo', 'Libra', 'Scorpio',
                  'Sagittarius', 'Capricorn'],
+        
         'Diet': ['Omnivore', 'Vegetarian', 'Vegan', 'Kosher', 'Halal'],
+        
         "Looking for status": ["single", "married"],
-        "Looking for gender": ['Men', 'Women', 'Agenders', 'Androgynes', 'Bigenders', 'Cis Men', 'Cis Women',
-                               'Genderfluids', 'Genderqueers', 'Genders Nonconforming', 'Hijras', 'Intersexes',
-                               'Non-binaries', 'Others', 'Pangenders', 'Transfeminines', 'Transgenders',
-                               'Transmasculines', 'Transsexuals', 'Trans Men', 'Trans Women', 'Two Spirits'],
+        
+        "Looking for gender": ['men', 'women', 'agenders', 'androgynes', 'bigenders', 'cis Men', 'cis Women',
+                               'genderfluids', 'genderqueers', 'genders nonconforming', 'hijras', 'intersexes',
+                               'non-binaries', 'others', 'pangenders', 'transfeminines', 'transgenders',
+                               'transmasculines', 'transsexuals', 'trans Men', 'trans Women', 'two Spirits'],
+        
         "Looking for connection": ["short", "long", "hookups", "new friends"]}
 
     for key, values in choices.items():
@@ -137,14 +197,43 @@ def find_kind_of_detail(string):
 def main():
     all_data = {}
     driver = site_login()
+    counter = 0
     for i in range(PAGES):
+#         try:
         print("Page number %s" % str(i + 1))
         profile_driver_unloaded = enter_profile(driver)
         profile_driver_loaded = wait_for_profile_to_load(profile_driver_unloaded)
         driver, all_data[i + 1] = scrape_profile(profile_driver_loaded)
-
-    print(all_data)
+        counter += 1
+#         except:
+#             print('problem with loading the data. moving to the next person.')
+#             driver.close()
+#             driver = site_login()
+    print('extracted data from ' +str(counter)+' out of '+ str(PAGES) + ' profiles attempted')
+    driver.close()
 
 
 if __name__ == '__main__':
     main()
+
+
+# changes:
+# 1. create a try-except block around the scarping process to hendel cases where the program crashes. now it will just restat the driver and continue from where it stopped. 
+# 2. now the driver shuts down when the program ends. 
+# 3. the program reports at the end about the amount of profiles it maneged to scape out of how many it was asked to scrape.
+# 4. fixed dict:
+#     'speaks' - now all languages are stored in a list
+#     'Religion' - also catches level of importance of provided
+#     'looking for connaction'
+#     'looking for gender'
+
+# In[31]:
+
+a = 'aaaabbbc'
+a[:-1]
+
+
+# In[ ]:
+
+
+
