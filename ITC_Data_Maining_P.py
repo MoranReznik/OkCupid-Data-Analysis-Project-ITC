@@ -38,7 +38,6 @@ def enter_profile(driver):
 
 def wait_for_profile_to_load(driver):
     """ wait for all relevant classes and ids to be loaded before we try t scrape the page """
-    # We need to add all the classes and IDs to the lists ############################################################
     class_list = ["profile-basics-username", "profile-basics-asl-age", "profile-basics-asl-location",
                   "matchprofile-details-text"]
     id_list = ["pass-button"]
@@ -61,22 +60,19 @@ def scrape_profile(driver):
     soup = BeautifulSoup(content, 'html.parser')
 
     name = soup.find(class_="profile-basics-username").get_text()
-    print(name)  # we will remove this later on  ##############################################################
     age = soup.find(class_="profile-basics-asl-age").get_text()
     location = soup.find(class_="profile-basics-asl-location").get_text()
-    details_unorganized = [detail.get_text() for detail in soup.find_all(class_="matchprofile-details-text")]
-
     data = {'Name': name, 'Age': age, 'Location': location}
 
-    # here there is a bunch of code that should be re-written, the goal is to
-    # add all of the details of the women to the dict
-    for detail in details_unorganized:
+    details_temp = [detail.get_text() for detail in soup.find_all(class_="matchprofile-details-text")]
+    for detail in details_temp:
         details += detail.split(',')
+
     for detail in details:
-        detail = detail.strip(' ')
-        kind = find_kind_of_detail(detail)
-        if not kind:
-            data[kind] = detail
+        kind = find_kind_of_detail(detail.strip())
+        if kind:
+            data[kind] = detail.strip()
+    print(data)  # we will remove this later on  ##############################################################
 
     driver.find_elements_by_id("pass-button")[1].send_keys('\n')
     driver.get(HOME_URL)
@@ -88,47 +84,64 @@ def find_kind_of_detail(string):
     in the right key, we need to know to what category this detail belongs to
     possible categories are specified in the scrape func's docstring"""
 
-    sequel_orientation = [['Straight', 'Gay', 'Bisexual', 'Asexual',
-                          'Demisexual', 'Lesbian', 'Pansexual'], 'Sexuel Oriantaion']
-    gender = [['Man', 'Woman', 'Agender', 'Androgynous', 'Bigender', 'Cis Man', 'Cis Woman', 'Genderfluid'], 'Gender']
-    status = [['Single', 'Seeing Someone', 'Married'], 'Status']
-    relationship_type = [['Monogamous', 'Non-monogamous'], 'Relationship Type']
-    height = [["3'", "4'", "5'", "6'", "7'"], 'Height']
-    body_type = [['Thin', 'Overweight', 'Average Build', 'Fit', 'Jacked', 'A little extra', 'Curvy', 'Full figured'],
-                 'Body Type']
-    ethnicity = [['Asian', 'Black', 'Hispanic/Latin', 'Indian', 'Middle Eastren', 'Native American',
-                  'Pacific Islander', 'White'], 'Ethnicity']
-    speaks = [['Speaks Hebrew', 'Speaks English', 'Speaks French', 'Speaks Russian', 'Speaks Arabic'], 'Speaks']
-    politics = [['Politically liberal', 'Politically moderate', 'Politically conservative'], 'Politics']
-    education = [['High school', 'Two-year college', 'University', 'Post-grad'], 'Education']
-    religion = [['Agnosticism', 'Atheism', 'Christianity', 'Judaism', 'Catholicism', 'Islam', 'Hinduism', 'Buddhism'],
-                'Religion']
-    tobacco = [['Often', 'Sometimes', "Doesn't smoke cigarettes"], 'Tobacco']
-    drinks = [['Often', 'Sometimes', 'Never'], 'Drinks']
-    drugs = [['Often', 'Sometimes', 'Never'], 'Drugs']
-    marijuana = [['Often', 'Sometimes', 'Never'], 'Marijuana']
-    kids = [['Has Kid(s)', "Doesn't have kids"], 'Kids']
-    pets = [['Has Dogs', 'Has cats'], 'Pets']
-    sign = [['Aquarius', 'Pisces', 'Aries', 'Taurus', 'Gemini', 'Cancer', 'leo',
-             'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn'], 'Sign']
-    diet = [['Omnivore', 'Vegeterain', 'Vegan', 'Kosher', 'Halal'], 'Diet']
+    choices = {
+        'Sexual Orientation': ['Straight', 'Gay', 'Bisexual', 'Asexual', 'Demisexual', 'Lesbian', 'Pansexual', 'Queer',
+                               'Questioning', 'Sapiosexual'],
+        'Gender': ['Woman', 'Man', 'Agender', 'Androgynous', 'Bigender', 'Cis Man', 'Cis Woman', 'Genderfluid',
+                   'Genderqueer', 'Gender Nonconforming', 'Hijra', 'Intersex', 'Non-binary', 'Other', 'Pangender',
+                   'Transfeminine', 'Transgender', 'Transmasculine', 'Transsexual', 'Trans Man', 'Trans Woman',
+                   'Two Spirit'],
+        'Status': ['Single', 'Seeing Someone', 'Married'],
+        'Relationship Type': ['Monogamous', 'Non-monogamous'],
+        'Height': ["3'", "4'", "5'", "6'", "7'"],
+        'Body Type': ['Thin', 'Overweight', 'Average Build', 'Fit', 'Jacked', 'A little extra', 'Curvy',
+                      'Full figured'],
+        'Ethnicity': ['Asian', 'Black', 'Hispanic / Latin', 'Indian', 'Middle Eastern', 'Native American',
+                      'Pacific Islander', 'White', 'Other'],
+        'speaks': ['English', 'Afrikaans', 'Albanian', 'Arabic', 'Armenian', 'Basque', 'Belarusian', 'Bengali',
+                   'Breton', 'Bulgarian', 'Catalan', 'Cebuano', 'Chechen', 'Chinese', 'Chinese (Cantonese)',
+                   'Chinese (Mandarin)', 'C++', 'Croatian', 'Czech', 'Danish', 'Dutch', 'Esperanto', 'Estonian',
+                   'Finnish', 'French', 'Frisian', 'Georgian', 'German', 'Greek', 'Gujarati', 'Ancient Greek',
+                   'Hawaiian', 'Hebrew', 'Hindi', 'Hungarian', 'Icelandic', 'Ilongo', 'Indonesian', 'Irish', 'Italian',
+                   'Japanese', 'Khmer', 'Korean', 'Latin', 'Latvian', 'LISP', 'Lithuanian', 'Malay', 'Maori',
+                   'Mongolian', 'Norwegian', 'Occitan', 'Other', 'Persian', 'Polish', 'Portuguese', 'Punjabi',
+                   'Romanian', 'Rotuman', 'Russian', 'Sanskrit', 'Sardinian', 'Serbian', 'Sign Language', 'Slovak',
+                   'Slovenian', 'Spanish', 'Swahili', 'Swedish', 'Tagalog', 'Tamil', 'Thai', 'Tibetan', 'Turkish',
+                   'Ukrainian', 'Urdu', 'Vietnamese', 'Welsh', 'Yiddish'],
+        'Politics': ['Politically liberal', 'Politically moderate', 'Politically conservative'],
+        'Education': ['High school', 'Two-year college', 'University', 'Post-grad'],
+        'Religion': ['Agnostic', 'Atheist', 'Christian', 'Jewish', 'Catholic', 'Islamic', 'Hindu',
+                     'Buddhist', 'Sikh'],
+        'Tobacco': ['Smokes cigarettes regularly', 'Smokes cigarettes sometimes', "Doesn't smoke cigarettes"],
+        'Drinks': ['Drinks regularly', 'Drinks sometimes', 'Never drinks'],
+        'Drugs': ['Does drugs regularly', 'Does drugs sometimes', "Doesn’t do drugs"],
+        'Marijuana': ['Smokes marijuana regularly', 'Smokes marijuana sometimes', 'Never smokes marijuana'],
+        'Kids': ['Has Kid(s)', "Doesn’t have kids", "Wants kids"],
+        'Pets': ['Has dogs', 'Has cats'],
+        'Sign': ['Aquarius', 'Pisces', 'Aries', 'Taurus', 'Gemini', 'Cancer', 'leo', 'Virgo', 'Libra', 'Scorpio',
+                 'Sagittarius', 'Capricorn'],
+        'Diet': ['Omnivore', 'Vegetarian', 'Vegan', 'Kosher', 'Halal'],
+        "Looking for status": ["single", "married"],
+        "Looking for gender": ['Men', 'Women', 'Agenders', 'Androgynes', 'Bigenders', 'Cis Men', 'Cis Women',
+                               'Genderfluids', 'Genderqueers', 'Genders Nonconforming', 'Hijras', 'Intersexes',
+                               'Non-binaries', 'Others', 'Pangenders', 'Transfeminines', 'Transgenders',
+                               'Transmasculines', 'Transsexuals', 'Trans Men', 'Trans Women', 'Two Spirits'],
+        "Looking for connection": ["short", "long", "hookups", "new friends"]}
 
-    categories = [sequel_orientation, gender, status, relationship_type, height, body_type, ethnicity, politics,
-                   education, religion, tobacco, drinks, drugs, marijuana, kids, pets, sign, diet]
-
-    for category in categories:
-        if string in category[0]:
-            return category[1]
+    for key, values in choices.items():
+        for value in values:
+            if value.lower() in string.lower():
+                return key
 
 
 def main():
     all_data = {}
     driver = site_login()
     for i in range(PAGES):
-        print("Page number %s" % str(i+1))
+        print("Page number %s" % str(i + 1))
         profile_driver_unloaded = enter_profile(driver)
         profile_driver_loaded = wait_for_profile_to_load(profile_driver_unloaded)
-        driver, all_data[i+1] = scrape_profile(profile_driver_loaded)
+        driver, all_data[i + 1] = scrape_profile(profile_driver_loaded)
 
     print(all_data)
 
