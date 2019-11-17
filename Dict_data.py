@@ -13,7 +13,7 @@ choices = {
 
         'Relationship Type': ['Monogamous', 'Non-monogamous'],
 
-        'Height': ["3'", "4'", "5'", "6'", "7'"],
+        'Height': ['cm'],
 
         'Body Type': ['Thin', 'Overweight', 'Average Build', 'Fit', 'Jacked', 'A little extra', 'Curvy',
                       'Full figured'],

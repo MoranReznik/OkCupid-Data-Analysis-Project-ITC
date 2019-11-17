@@ -1,5 +1,5 @@
 from ScrapingFuncs import *
-NUMBER = 3
+NUMBER = 10
 
 
 def main():
@@ -7,13 +7,13 @@ def main():
     driver = site_login('women')
     counter = 0
     for i in range(NUMBER):
-        try:  # in case the program crushes, restart and complete the task
+       try:  # in case the program crushes, restart and complete the task
             print("Page number %s" % str(i + 1))
-            profile_driver_unloaded = enter_profile(driver)
+            profile_driver_unloaded, num_pics = enter_profile(driver)
             profile_driver_loaded = wait_for_profile_to_load(profile_driver_unloaded)
-            driver, man_data[i + 1] = scrape_profile(profile_driver_loaded)
+            driver, man_data[i + 1] = scrape_profile(profile_driver_loaded, num_pics)
             counter += 1
-        except:
+       except:
             print('problem with loading the data. moving to the next person.')
             driver.close()
             driver = site_login('women')
