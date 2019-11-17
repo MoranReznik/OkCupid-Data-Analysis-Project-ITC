@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-import Dict_data
+import DictData
 
 # defining constants
 SITE_URL = "https://www.okcupid.com"
@@ -138,7 +138,7 @@ def find_kind_of_detail(string):
     in the right key, we need to know to what category this detail belongs to
     possible categories are specified in the scrape func's docstring"""
 
-    for key, values in Dict_data.choices.items():
+    for key, values in DictData.choices.items():
         for value in values:
             if value.lower() in string.lower():
                 return key
