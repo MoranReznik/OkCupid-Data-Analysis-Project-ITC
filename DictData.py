@@ -1,4 +1,4 @@
-### the dict that maps details from a profile to the category it belongs to
+# the dict that maps details from a profile to the category it belongs to
 
 choices = {
         'Sexual Orientation': ['Straight', 'Gay', 'Bisexual', 'Asexual', 'Demisexual', 'Lesbian', 'Pansexual', 'Queer',

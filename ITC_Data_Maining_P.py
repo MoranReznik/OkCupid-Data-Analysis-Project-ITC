@@ -1,39 +1,30 @@
 from ScrapingFuncs import *
-NUMBER = 3
+
+
+NUMBER = 20
+PROFILES = {"straight man": {"user": "itc.proje@gmail.com", "pass": "itc_pass4", "data": {}},
+            "straight woman": {"user": "shirella111@gmail.com", "pass": "itcpass123", "data": {}}}
 
 
 def main():
-    man_data = {}
-    driver = site_login('women')
     counter = 0
-    for i in range(NUMBER):
-        try:  # in case the program crushes, restart and complete the task
-            print("Page number %s" % str(i + 1))
-            profile_driver_unloaded = enter_profile(driver)
-            profile_driver_loaded = wait_for_profile_to_load(profile_driver_unloaded)
-            driver, man_data[i + 1] = scrape_profile(profile_driver_loaded)
-            counter += 1
-        except:
-            print('problem with loading the data. moving to the next person.')
-            driver.close()
-            driver = site_login('women')
-    driver.close()
+    for profile_name, login_details in PROFILES.items():
+        driver = site_login(login_details)
+        for i in range(1, NUMBER + 1):
+            try:  # in case the program crushes, restart and complete the task
+                print("%s: page number %s" % (profile_name, str(i)))
+                profile_driver_unloaded = enter_profile(driver)
+                profile_driver_loaded = wait_for_profile_to_load(profile_driver_unloaded)
+                driver, PROFILES[profile_name]["data"][i] = scrape_profile(profile_driver_loaded)
+                counter += 1
+            except:
+                print('problem with loading the data. moving to the next person.')
+                driver.close()
+                driver = site_login(login_details)
+        driver.close()
 
-    woman_data = {}
-    driver = site_login('men')
-    for i in range(NUMBER):
-        try:  # in case the program crushes, restart and complete the task
-            print("Page number %s" % str(i + 1))
-            profile_driver_unloaded = enter_profile(driver)
-            profile_driver_loaded = wait_for_profile_to_load(profile_driver_unloaded)
-            driver, woman_data[i + 1] = scrape_profile(profile_driver_loaded)
-            counter += 1
-        except:
-            print('problem with loading the data. moving to the next person.')
-            driver.close()
-            driver = site_login('men')
-    print('extracted data from ' + str(counter)+' out of '+ str(NUMBER*2) + ' profiles attempted')
-    driver.close()
+    print('extracted data from ' + str(counter)+' out of ' + str(NUMBER * len(PROFILES)) + ' profiles attempted')
+
 
 if __name__ == '__main__':
     main()

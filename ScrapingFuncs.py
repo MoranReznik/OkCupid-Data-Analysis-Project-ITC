@@ -5,7 +5,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-import Dict_data
+import DictData
+
 
 # defining constants
 SITE_URL = "https://www.okcupid.com"
@@ -14,21 +15,16 @@ CHROME_DRIVER_PATH = "chromedriver.exe"
 HOME_URL = "https://www.okcupid.com/home"
 
 
-def site_login(gender):
+def site_login(login_details):
     """ login into OkCupid site and return the selenium driver in the home page """
 
     # setting up the driver and entering the login page
     driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
     driver.get(LOGIN_URL)
 
-    # for the requested gender, enter the login details and enter the site
-    if gender == 'men':
-        driver.find_element_by_name("username").send_keys("itc.proje@gmail.com")
-        driver.find_element_by_name("password").send_keys("itc_pass4")
-        driver.find_element_by_class_name("login2017-actions-button").send_keys('\n')
-    else:
-        driver.find_element_by_name("username").send_keys("shirella111@gmail.com")
-    driver.find_element_by_name("password").send_keys("itcpass123")
+    # enter the login details
+    driver.find_element_by_name("username").send_keys(login_details["user"])
+    driver.find_element_by_name("password").send_keys(login_details["pass"])
     driver.find_element_by_class_name("login2017-actions-button").send_keys('\n')
     url = driver.current_url
 
@@ -44,7 +40,7 @@ def enter_profile(driver):
     # getting and parsing the content of the doubletake page
     home_page_content = driver.page_source
     soup = BeautifulSoup(home_page_content, 'html.parser')
-    # finding the url if the profile page and entering it
+    # finding the url in the profile page and entering it
     profile_url = SITE_URL + soup.find(class_="cardsummary-item cardsummary-profile-link").find('a', href=True)['href']
     driver.get(profile_url)
 
@@ -83,27 +79,27 @@ def scrape_profile(driver):
     location = soup.find(class_="profile-basics-asl-location").get_text()
     data = {'Name': name, 'Age': age, 'Location': location}
     details_temp = [detail.get_text() for detail in soup.find_all(class_="matchprofile-details-text")]
-    # splitting data that is seperated by a comma
+    # splitting data that is separated by a comma
     for detail in details_temp:
         details += detail.split(',')
     # removing whitespaces
     for detail in details:
         kind = find_kind_of_detail(detail.strip())
-        # hendeling several kinds of details that are formatted in a special way
+        # handling several kinds of details that are formatted in a special way
         if kind == 'speaks':
-            detail = detail[7:]
+            detail = detail[7:]  # remove the word speaks from the string
             languages = detail.replace('and', ',')
             languages = languages.replace(', some', ',')
             languages = languages.split(',')
-            for i, l in enumerate(languages):
-                languages[i] = l.strip(' ')
+            for index, language in enumerate(languages):
+                languages[index] = language.strip(' ')
             data[kind] = languages
 
         elif kind == 'Religion':
             detail = detail.split(' (')
             if len(detail) > 1:
                 data['Religion'] = detail[0]
-                data['Religion importence'] = detail[1][:-1]
+                data['Religion importance'] = detail[1][:-1]
             else:
                 data['Religion'] = detail[0]
 
@@ -135,7 +131,7 @@ def find_kind_of_detail(string):
     in the right key, we need to know to what category this detail belongs to
     possible categories are specified in the scrape func's docstring"""
 
-    for key, values in Dict_data.choices.items():
+    for key, values in DictData.choices.items():
         for value in values:
             if value.lower() in string.lower():
                 return key
