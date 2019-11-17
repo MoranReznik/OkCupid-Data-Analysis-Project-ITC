@@ -40,15 +40,19 @@ def site_login(gender):
 
 
 def enter_profile(driver):
-    """ Move from the homepage to the profile page and return the selenium driver """
+    """ Move from the homepage to the profile page and return the selenium driver. also get number of
+    photos the person uploded of himself"""
+
     # getting and parsing the content of the doubletake page
+    num_pics = len(driver.find_elements_by_css_selector('[alt="A photo"]')) - 10  # there are alwayes 10 photos in this
+    # page that are not of the person presented in this page
     home_page_content = driver.page_source
     soup = BeautifulSoup(home_page_content, 'html.parser')
     # finding the url if the profile page and entering it
     profile_url = SITE_URL + soup.find(class_="cardsummary-item cardsummary-profile-link").find('a', href=True)['href']
     driver.get(profile_url)
 
-    return driver
+    return driver, num_pics
 
 
 def wait_for_profile_to_load(driver):
@@ -65,7 +69,7 @@ def wait_for_profile_to_load(driver):
     return driver
 
 
-def scrape_profile(driver):
+def scrape_profile(driver, num_pics):
     """ Scraping the desired content from the profile page
     and returning the selenium driver and the and the profile's data.
     the data is organized as a dict with the following keys (if there is no data it will be None):
@@ -106,11 +110,14 @@ def scrape_profile(driver):
                 data['Religion importence'] = detail[1][:-1]
             else:
                 data['Religion'] = detail[0]
-
+        elif kind == 'Height':
+            detail = detail[:-2]
+            data[kind] = detail
         elif kind == 'Looking for gender':
             detail = detail[12:]
             detail = detail.replace("short-term", 'short')
             detail = detail.replace("long-term", 'short')
+            detail = detail.replace("and new", '')
             detail = detail.replace(".", '')
             detail = detail.split(' ')
             connection = [i for i in detail if i in ["short", "long", "hookups", "friends"]]
@@ -124,6 +131,7 @@ def scrape_profile(driver):
 
         elif kind:
             data[kind] = detail.strip()
+    data['num_pics'] = num_pics
     print(data)
     driver.find_elements_by_id("pass-button")[1].send_keys('\n')
     driver.get(HOME_URL)
