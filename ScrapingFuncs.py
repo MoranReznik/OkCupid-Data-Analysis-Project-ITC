@@ -5,13 +5,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+import Dict_data
 
 # defining constants
 SITE_URL = "https://www.okcupid.com"
 LOGIN_URL = "https://www.okcupid.com/login"
 CHROME_DRIVER_PATH = "chromedriver.exe"
 HOME_URL = "https://www.okcupid.com/home"
-PAGES = 30
+
 
 def site_login(gender):
     """ login into OkCupid site and return the selenium driver in the home page """
@@ -56,7 +57,7 @@ def wait_for_profile_to_load(driver):
     class_list = ["profile-basics-username", "profile-basics-asl-age", "profile-basics-asl-location",
                   "matchprofile-details-text"]
     id_list = ["pass-button"]
-    max_wait_time = 100
+    max_wait_time = 20
     for class_name in class_list:
         WebDriverWait(driver, max_wait_time).until(ec.presence_of_element_located((By.CLASS_NAME, class_name)))
     for id_name in id_list:
@@ -134,70 +135,7 @@ def find_kind_of_detail(string):
     in the right key, we need to know to what category this detail belongs to
     possible categories are specified in the scrape func's docstring"""
 
-    choices = {
-        'Sexual Orientation': ['Straight', 'Gay', 'Bisexual', 'Asexual', 'Demisexual', 'Lesbian', 'Pansexual', 'Queer',
-                               'Questioning', 'Sapiosexual'],
-
-        'Gender': ['Woman', 'Man', 'Agender', 'Androgynous', 'Bigender', 'Cis Man', 'Cis Woman', 'Genderfluid',
-                   'Genderqueer', 'Gender Nonconforming', 'Hijra', 'Intersex', 'Non-binary', 'Other', 'Pangender',
-                   'Transfeminine', 'Transgender', 'Transmasculine', 'Transsexual', 'Trans Man', 'Trans Woman',
-                   'Two Spirit'],
-
-        'Status': ['Single', 'Seeing Someone', 'Married'],
-
-        'Relationship Type': ['Monogamous', 'Non-monogamous'],
-
-        'Height': ["3'", "4'", "5'", "6'", "7'"],
-
-        'Body Type': ['Thin', 'Overweight', 'Average Build', 'Fit', 'Jacked', 'A little extra', 'Curvy',
-                      'Full figured'],
-
-        'Ethnicity': ['Asian', 'Black', 'Hispanic / Latin', 'Indian', 'Middle Eastern', 'Native American',
-                      'Pacific Islander', 'White', 'Other'],
-
-        'speaks': ['English', 'Afrikaans', 'Albanian', 'Arabic', 'Armenian', 'Basque', 'Belarusian', 'Bengali',
-                   'Breton', 'Bulgarian', 'Catalan', 'Cebuano', 'Chechen', 'Chinese', 'Chinese (Cantonese)',
-                   'Chinese (Mandarin)', 'C++', 'Croatian', 'Czech', 'Danish', 'Dutch', 'Esperanto', 'Estonian',
-                   'Finnish', 'French', 'Frisian', 'Georgian', 'German', 'Greek', 'Gujarati', 'Ancient Greek',
-                   'Hawaiian', 'Hebrew', 'Hindi', 'Hungarian', 'Icelandic', 'Ilongo', 'Indonesian', 'Irish', 'Italian',
-                   'Japanese', 'Khmer', 'Korean', 'Latin', 'Latvian', 'LISP', 'Lithuanian', 'Malay', 'Maori',
-                   'Mongolian', 'Norwegian', 'Occitan', 'Other', 'Persian', 'Polish', 'Portuguese', 'Punjabi',
-                   'Romanian', 'Rotuman', 'Russian', 'Sanskrit', 'Sardinian', 'Serbian', 'Sign Language', 'Slovak',
-                   'Slovenian', 'Spanish', 'Swahili', 'Swedish', 'Tagalog', 'Tamil', 'Thai', 'Tibetan', 'Turkish',
-                   'Ukrainian', 'Urdu', 'Vietnamese', 'Welsh', 'Yiddish'],
-
-        'Politics': ['Politically liberal', 'Politically moderate', 'Politically conservative'],
-
-        'Education': ['High school', 'Two-year college', 'University', 'Post-grad'],
-
-        'Religion': ['Agnostic', 'Atheist', 'Christian', 'Jewish', 'Catholic', 'Islamic', 'Hindu',
-                     'Buddhist', 'Sikh'],
-
-        'Tobacco': ['Smokes cigarettes regularly', 'Smokes cigarettes sometimes', "Doesn't smoke cigarettes"],
-
-        'Drinks': ['Drinks regularly', 'Drinks sometimes', 'Never drinks'],
-
-        'Drugs': ['Does drugs regularly', 'Does drugs sometimes', "Doesn’t do drugs"],
-
-        'Marijuana': ['Smokes marijuana regularly', 'Smokes marijuana sometimes', 'Never smokes marijuana'],
-
-        'Kids': ['Has Kid(s)', "Doesn’t have kids", "Wants kids"],
-
-        'Pets': ['Has dogs', 'Has cats'],
-
-        'Sign': ['Aquarius', 'Pisces', 'Aries', 'Taurus', 'Gemini', 'Cancer', 'leo', 'Virgo', 'Libra', 'Scorpio',
-                 'Sagittarius', 'Capricorn'],
-
-        'Diet': ['Omnivore', 'Vegetarian', 'Vegan', 'Kosher', 'Halal'],
-
-        "Looking for gender": ['men', 'women', 'agenders', 'androgynes', 'bigenders', 'cis Men', 'cis Women',
-                               'genderfluids', 'genderqueers', 'genders nonconforming', 'hijras', 'intersexes',
-                               'non-binaries', 'others', 'pangenders', 'transfeminines', 'transgenders',
-                               'transmasculines', 'transsexuals', 'trans Men', 'trans Women', 'two Spirits'],
-
-        "Looking for connection": ["short", "long", "hookups", "new friends"]}
-
-    for key, values in choices.items():
+    for key, values in Dict_data.choices.items():
         for value in values:
             if value.lower() in string.lower():
                 return key
