@@ -1,5 +1,17 @@
-from ScrapingFuncs import *
-NUMBER = 5
+from EnterProfile import enter_profile
+from ScrapeProfile import scrape_profile
+from SiteLogin import site_login
+from WaitForProfileToLoad import wait_for_profile_to_load
+
+# imports
+
+
+
+
+
+
+
+NUMBER = 2
 PROFILES = {"straight man": {"user": "itc.proje@gmail.com", "pass": "itc_pass4", "data": {}},
             "straight woman": {"user": "shirella111@gmail.com", "pass": "itcpass123", "data": {}}}
 
@@ -15,10 +27,12 @@ def main():
                 profile_driver_loaded = wait_for_profile_to_load(profile_driver_unloaded)
                 driver, PROFILES[profile_name]["data"][i] = scrape_profile(profile_driver_loaded, num_pics)
                 counter += 1
+
             except:
                 print('problem with loading the data. moving to the next person.')
                 driver.close()
                 driver = site_login(login_details)
+
         driver.close()
 
     print('extracted data from ' + str(counter)+' out of ' + str(NUMBER * len(PROFILES)) + ' profiles attempted')
@@ -26,3 +40,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
