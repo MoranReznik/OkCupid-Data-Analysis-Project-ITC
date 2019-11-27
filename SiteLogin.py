@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import time
 
 CHROME_DRIVER_PATH = "chromedriver.exe"
@@ -8,7 +9,10 @@ def site_login(login_details):
     """ login into OkCupid site and return the selenium driver in the home page """
 
     # setting up the driver and entering the login page
-    driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
+    chrome_options = Options()
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--headless")
+    driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH, options=chrome_options)
     driver.get(LOGIN_URL)
 
     # enter the login details
