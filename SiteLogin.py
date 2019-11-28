@@ -21,6 +21,7 @@ def site_login(login_details):
 
     # setting up the driver and entering the login page
     chrome_options = Options()
+    chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--headless")
     driver = webdriver.Chrome(executable_path=GV.CHROME_DRIVER_PATH, options=chrome_options)
