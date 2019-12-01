@@ -20,6 +20,9 @@ def enter_profile(driver):
             num_pics : int
                 the number of pictures the user uploaded of himself.
 
+            profile_id : str
+                the unique profile id
+
     """
 
     # getting and parsing the content of the doubletake page
@@ -29,7 +32,8 @@ def enter_profile(driver):
     soup = bs4.BeautifulSoup(home_page_content, 'html.parser')
     # finding the url if the profile page and entering it
     address = soup.find(class_="cardsummary-item cardsummary-profile-link").find('a', href=True)['href']
+    profile_id = address.split('/')[-1].split('?')[0]
     profile_url = GV.SITE_URL + address
     driver.get(profile_url)
 
-    return driver, num_pics
+    return driver, num_pics, profile_id

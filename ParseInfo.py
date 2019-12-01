@@ -12,7 +12,7 @@ def parse_info(detail, kind):
             Returns
             -------
             detail : string
-                the input string preased to a more human readable form
+                the input string parsed to a more human readable form
     """
 
     if kind == 'speaks':
@@ -36,10 +36,10 @@ def parse_info(detail, kind):
         detail = detail[:-2]
         return detail
 
-    elif kind == 'Looking for gender':
+    elif kind == 'Looking_for_gender':
         detail = detail[12:]
         detail = detail.replace("short-term", 'short')
-        detail = detail.replace("long-term", 'short')
+        detail = detail.replace("long-term", 'long')
         detail = detail.replace("and new", '')
         detail = detail.replace(".", '')
         detail = detail.split(' ')
