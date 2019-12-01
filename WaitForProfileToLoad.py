@@ -14,7 +14,7 @@ def wait_for_profile_to_load(driver):
 
                 Returns
                 -------
-                driver : selenium webdrivre object
+                driver : selenium webdriver object
                     the input driver, after finishing loading all of the classes
         """
 

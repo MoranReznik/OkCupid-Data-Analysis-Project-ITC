@@ -30,3 +30,7 @@ required_details = ['Name', 'Age', 'Location', 'Sexual_Orientation', 'Gender', '
                     'Height', 'Body_Type', 'Ethnicity', 'speaks', 'Politics', 'Education', 'Religion',
                     'Tobacco', 'Drinks', 'Drugs', 'Marijuana', 'Kids', 'Pets', 'Sign', 'Diet',
                     'Looking_for_gender', 'Looking_for_connection', 'number_of_pics']
+
+# CreateDatabase.py
+MYSQL_USERNAME = "root"
+MYSQL_PASSWORD = "KKkm73iaC2cnH3c#oMG$KD^JzA*f"

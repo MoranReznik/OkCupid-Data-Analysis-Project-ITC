@@ -1,10 +1,10 @@
 import bs4
 import FindKindOfDetail
-import ParseInfo as pi
+import ParseInfo as Pi
 import GV
 
 
-def scrape_profile(driver, num_pics, required_details):
+def scrape_profile(driver, profile_id, num_pics, required_details):
     """ Scraping the desired content from the profile page
     and returning the selenium driver and the and the profile's data.
     the data is organized as a dict with the following keys (if there is no data it will be None):
@@ -13,11 +13,14 @@ def scrape_profile(driver, num_pics, required_details):
 
             Parameters
             ----------
-            driver : selenium webriver object
-                a websriver on the profile page of a user
+            driver : selenium webdriver object
+                a webdriver on the profile page of a user
+
+            profile_id : str
+                the unique profile id (given by the enter_profile function)
 
             num_pics : int
-                the number pictures the user uploaded of himself (given by the enter_profile function)
+                the number of pictures the user uploaded of himself (given by the enter_profile function)
 
             required_details : list
                 a list of the kind of details the user wants to collect about the OkCupid profiles.
@@ -37,15 +40,12 @@ def scrape_profile(driver, num_pics, required_details):
     content = driver.page_source
     soup = bs4.BeautifulSoup(content, 'html.parser')
     # finding and getting the data from the page
-    name = soup.find(class_="profile-basics-username").get_text()
     age = soup.find(class_="profile-basics-asl-age").get_text()
     location = soup.find(class_="profile-basics-asl-location").get_text()
 
-    data = {}
+    data = {'Profile_id': profile_id}
 
     # taking only the details the user asked for
-    if 'Name' in required_details:
-        data['Name'] = name
     if 'Age' in required_details:
         data['Age'] = age
     if 'Location' in required_details:
@@ -60,25 +60,25 @@ def scrape_profile(driver, num_pics, required_details):
         # find category of detail
         kind = FindKindOfDetail.find_kind_of_detail(detail.strip())
         # parse detail
-        detail = pi.parse_info(detail, kind)
+        detail = Pi.parse_info(detail, kind)
         # handling several kinds of details that are formatted in a special way
         if kind in required_details:  # taking only the details the user asked for
             if kind == 'Religion':
                 if len(detail) > 1:
                     data['Religion'] = detail[0]
-                    data['Religion importance'] = detail[1]
+                    data['Religion_importance'] = detail[1]
                 else:
                     data['Religion'] = detail[0]
 
-            elif kind == 'Looking for gender':
-                data["Looking for gender"] = detail[0]
-                data["Looking for connection"] = detail[1]
+            elif kind == 'Looking_for_gender':
+                data["Looking_for_gender"] = detail[0]
+                data["Looking_for_connection"] = detail[1]
 
             else:
                 data[kind] = detail
 
     if 'number_of_pics' in required_details:  # taking only the details the user asked for
-        data['num_pics'] = num_pics
+        data['Num_pics'] = num_pics
 
     print(data)
     driver.find_elements_by_id("pass-button")[1].send_keys('\n')
