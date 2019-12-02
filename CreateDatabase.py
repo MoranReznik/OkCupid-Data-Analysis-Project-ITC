@@ -25,9 +25,10 @@ def create_database():
     cur.execute(''' USE okcupid_project ''')
 
     sql = ''' CREATE TABLE IF NOT EXISTS profiles
-    (main_id INT NOT NULL AUTO_INCREMENT, Profile_id VARCHAR(255) NOT NULL, 
+    (main_id INT NOT NULL AUTO_INCREMENT, Profile_id VARBINARY(255) NOT NULL UNIQUE, 
     Scraper_profile VARCHAR(255) NOT NULL, Age INT DEFAULT NULL, Height INT DEFAULT NULL, 
     Location VARCHAR(255) DEFAULT NULL, Num_pics INT DEFAULT NULL, PRIMARY KEY (main_id)) '''
+
     cur.execute(sql)
 
     for column in columns:
