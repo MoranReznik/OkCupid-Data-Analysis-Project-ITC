@@ -1,7 +1,7 @@
 import json
 
 with open('choices.json') as json_file:
-    DICTDATA = json.load(json_file)
+    DICT_DATA = json.load(json_file)
 
 
 def find_kind_of_detail(string):
@@ -21,7 +21,7 @@ def find_kind_of_detail(string):
                 the category of the input detail
     """
 
-    for key, values in DICTDATA.items():
+    for key, values in DICT_DATA.items():
         for value in values:
             if value.lower() in string.lower():
                 return key

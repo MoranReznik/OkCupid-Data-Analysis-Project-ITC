@@ -12,7 +12,7 @@ def parse_info(detail, kind):
             Returns
             -------
             detail : string
-                the input string preased to a more human readable form
+                the input string parsed to a more human readable form
     """
 
     if kind == 'speaks':
