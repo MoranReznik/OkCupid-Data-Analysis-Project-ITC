@@ -6,7 +6,7 @@ import UpdateDatabase
 import logging
 import CLIArguments
 
-profiles, required_details, number = CLIArguments.get_cli_arguments()
+mode, profiles, required_details, number = CLIArguments.get_cli_arguments()
 
 
 def main():

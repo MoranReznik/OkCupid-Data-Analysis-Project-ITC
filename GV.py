@@ -19,6 +19,11 @@ profiles_help = 'what kind of profiles to scrape. options are:' \
                 'straight_female, straight_male. if this flag is not set, take all possible kind of profiles.' \
                 'this argument also controls the order of scraping '
 
+mode_help = '''mode to operate in. 
+               read: reads from the database
+               write: scrape profiles and add them to database
+               print: scrape profiles and send them to stdout'''
+
 information_help = 'what information to scrape from each profile, if available. if this flag is not set,' \
                    ' take all possible information. ' \
                    ' the options are:' \

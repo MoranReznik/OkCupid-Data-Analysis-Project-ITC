@@ -13,10 +13,16 @@ def get_cli_arguments():
 
     # creating the flags
     parser = argparse.ArgumentParser(description='scrape profiles from OkCupid')
+    parser.add_argument('mode', type=str, help=GV.mode_help)
     parser.add_argument('num', type=int, help='number of profiles to scrape for each profile type')
     parser.add_argument('-p', '--profiles', nargs='+', help=GV.profiles_help)
     parser.add_argument('-i', '--information', nargs='+', help=GV.information_help)
     args = parser.parse_args()
+
+    # checking mode is a valid value
+    if args.mode not in ['read','write','print']:
+        exp = 'please provide a valid mode to operate in! modes can be read, write or print.'
+        raise Exception(exp)
 
     # checking number of profiles to scrape is a valid integer - raise exception if not
     if not isinstance(args.num, int):
