@@ -66,13 +66,13 @@ def scrape_profile(driver, num_pics, required_details):
             if kind == 'Religion':
                 if len(detail) > 1:
                     data['Religion'] = detail[0]
-                    data['Religion importance'] = detail[1]
+                    data['Religion_importance'] = detail[1]
                 else:
                     data['Religion'] = detail[0]
 
-            elif kind == 'Looking for gender':
-                data["Looking for gender"] = detail[0]
-                data["Looking for connection"] = detail[1]
+            elif kind == 'Looking_for_gender':
+                data["Looking_for_gender"] = detail[0]
+                data["Looking_for_connection"] = detail[1]
 
             else:
                 data[kind] = detail
