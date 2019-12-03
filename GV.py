@@ -20,8 +20,8 @@ profiles_help = 'what kind of profiles to scrape. options are:' \
                 'this argument also controls the order of scraping '
 
 mode_help = '''mode to operate in. 
-               read: reads from the database
-               write: scrape profiles and add them to database
+               read: reads from the database. required args: "my_sql_creds". opt args: kind of profiles,"information".
+               write: scrape profiles and add them to database.  required args: "my_sql_creds"
                print: scrape profiles and send them to stdout'''
 
 information_help = 'what information to scrape from each profile, if available. if this flag is not set,' \
