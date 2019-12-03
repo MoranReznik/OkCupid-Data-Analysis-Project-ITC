@@ -1,5 +1,3 @@
-# GV stands for GlobalVariables
-
 # EnterProfiles.py
 SITE_URL = "https://www.okcupid.com"
 
