@@ -6,13 +6,13 @@ import UpdateDatabase
 import logging
 import CLIArguments
 
-mode, profiles, required_details, number = CLIArguments.get_cli_arguments()
-
 
 def main():
 
     counter = 0
 
+    parameters = CLIArguments.get_cli_arguments()
+    print(parameters) ##############################################
     for main_profile_name, login_details in profiles.items():
         try:
             driver = SiteLogin.site_login(login_details)

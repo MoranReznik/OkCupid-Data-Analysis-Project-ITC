@@ -15,26 +15,20 @@ CHROME_DRIVER_PATH = "chromedriver.exe"
 LOGIN_URL = "https://www.okcupid.com/login"
 
 # CLIArguments
-profiles_help = 'what kind of profiles to scrape. options are:' \
-                'straight_female, straight_male. if this flag is not set, take all possible kind of profiles.' \
-                'this argument also controls the order of scraping '
-
 mode_help = '''mode to operate in. 
                read: reads from the database. required args: "my_sql_creds". opt args: kind of profiles,"information".
                write: scrape profiles and add them to database.  required args: "my_sql_creds"
                print: scrape profiles and send them to stdout'''
 
-information_help = 'what information to scrape from each profile, if available. if this flag is not set,' \
-                   ' take all possible information. ' \
-                   ' the options are:' \
-                   'Name, Age, Location, Sexual_Orientation,Gender,Status,Relationship_Type,Height,Body_Type,' \
-                   'Ethnicity, speaks, Politics, Education, Religion, Tobacco, Drinks, Drugs, Marijuana, Kids,' \
-                   'Pets, Sign, Diet, Looking_for_gender, Looking_for_connection, number_of_pics'
+my_sql_creds_help = '''username and password for mySQL server. used in order to read or write to the database. 
+should be formatted as "username password"'''
 
-required_details = ['Name', 'Age', 'Location', 'Sexual_Orientation', 'Gender', 'Status', 'Relationship_Type',
-                    'Height', 'Body_Type', 'Ethnicity', 'speaks', 'Politics', 'Education', 'Religion',
-                    'Tobacco', 'Drinks', 'Drugs', 'Marijuana', 'Kids', 'Pets', 'Sign', 'Diet',
-                    'Looking_for_gender', 'Looking_for_connection', 'number_of_pics']
+information_to_show_help = '''what information to scrape from each profile, if available. if this flag is not set,
+                    take all possible information. ' \
+                    the options are:' \
+                   Name, Age, Location,Gender, Sexual_Orientation,Gender,Status,Relationship_Type,Height,Body_Type,
+                   Ethnicity, speaks, Politics, Education, Religion, Tobacco, Drinks, Drugs, Marijuana, Kids,
+                   Pets, Sign, Diet, Looking_for_gender, Looking_for_connection, number_of_pics'''
 
 # CreateDatabase.py
 MYSQL_USERNAME = "root"
