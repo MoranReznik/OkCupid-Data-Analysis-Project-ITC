@@ -26,7 +26,7 @@ def update_database(mysql_cred, profile_data):
 
     with open('OkCupidKey', 'rb') as file:
         key = file.read()
-    profile_id = profile_data['Profile_id']
+    profile_id = profile_data['profile_id']
 
     # check if there is a duplicate profile_id
     sql = '''SELECT main_id, COUNT(Profile_id) from profiles WHERE Profile_id=AES_ENCRYPT("%s","%s")''' % \
@@ -44,12 +44,12 @@ def update_database(mysql_cred, profile_data):
 
     for column, value in profile_data.items():
         # next: add the details relevant to the profiles table
-        if column in ['Age', 'Height', 'Location', 'Num_pics']:
+        if column in ['age', 'height', 'location', 'num_pics']:
             sql = ''' UPDATE profiles SET %s = "%s" WHERE main_id = "%s" ''' % (column, value, main_id)
             cur.execute(sql)
 
         # finally: add the rest of the data to the relevant table
-        elif column and column != 'Profile_id': #incase column is empty list.. REMOVE LATER
+        elif column and column != 'profile_id': #incase column is empty list.. REMOVE LATER
             # # insert new value after deleting old value
             # # value = str(value).replace('\'', '')   #################################################################
             # if exists:

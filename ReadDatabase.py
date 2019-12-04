@@ -84,7 +84,6 @@ def read_database(mysql_cred, information, conditions):
                 where = where[:-4] + ')'
 
     sql = select + join + where + ' GROUP BY profiles.main_id'
-    print(sql)
     df = pd.read_sql(sql, con)
     con.close()
 

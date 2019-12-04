@@ -10,7 +10,8 @@ with open('choices.json') as json_file:
         values = []
         for i in v:
             values.append(i.lower())
-    DICT_DATA[lower_k] = values
+        DICT_DATA[lower_k] = values
+
 
 def get_cli_arguments():
     """ gets the relevant command line arguments and flags from the user.
@@ -98,7 +99,7 @@ def get_cli_arguments():
     if args.mode == 'read':
         if args.information:
             for info in args.information:
-                if info not in kinds and info not in ['Num_pics', 'Age', 'Height', 'Location', 'Religion_importance']:
+                if info not in kinds and info not in ['num_pics', 'age', 'height', 'location', 'religion_importance']:
                     raise (Exception('detail kind {} does not exist'.format(info)))
 
     # arrange dict of parameters to query database based on

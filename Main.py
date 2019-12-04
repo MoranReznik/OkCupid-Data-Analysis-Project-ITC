@@ -7,6 +7,7 @@ import UpdateDatabase
 import logging
 import CLIArguments
 import GV
+import mysql.connector
 
 
 def main():
