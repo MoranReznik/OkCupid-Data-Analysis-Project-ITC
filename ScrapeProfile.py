@@ -4,7 +4,7 @@ import ParseInfo as Pi
 import conf
 
 
-def scrape_profile(driver, profile_id, num_pics, mode):
+def scrape_profile(driver, profile_id, num_pics):
     """ Scraping the desired content from the profile page
     and returning the selenium driver and the and the profile's data.
     the data is organized as a dict with the following keys (if there is no data it will be None):
@@ -47,6 +47,8 @@ def scrape_profile(driver, profile_id, num_pics, mode):
     data = {'profile_id': profile_id, 'age': age, 'location': location, 'num_pics': num_pics}
 
     details_temp = [detail.get_text() for detail in soup.find_all(class_="matchprofile-details-text")]
+    print(details_temp)
+    print('\n')
     # splitting data that is separated by a comma
     for detail in details_temp:
         details += detail.split(',')
@@ -70,14 +72,14 @@ def scrape_profile(driver, profile_id, num_pics, mode):
 
         elif kind == 'speaks' and 'speaks' in data:
             data[kind] += detail
-
         else:
             data[kind] = detail
+
     if 'relationship_Type' in data:
         print('\n\n')
         rt = data['relationship_Type']
 
-        for gen in ['man','women','people']:
+        for gen in ['man', 'women', 'people']:
             if gen in rt:
                 data["looking_for_gender"] = gen
                 if 'non' in rt:
@@ -92,7 +94,6 @@ def scrape_profile(driver, profile_id, num_pics, mode):
             else:
                 data['Relationship_Type'] = 'monogamous'
     print(data)
-
     driver.find_elements_by_id("pass-button")[1].send_keys('\n')
     driver.get(conf.HOME_URL)
     return driver, data

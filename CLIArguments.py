@@ -13,7 +13,6 @@ with open('choices.json') as json_file:
         DICT_DATA[lower_k] = values
 
 
-
 def get_cli_arguments():
     """ gets the relevant command line arguments and flags from the user.
 
@@ -22,7 +21,7 @@ def get_cli_arguments():
             if mode is 'read'
             args : list
                 list of arguments: mode, [username, password], parameters to query based on as \
-                a dict, information to show on profiles
+                a dict, information to show on profiles, name of csv file
 
             if mode is 'write'
             args : list
@@ -37,7 +36,7 @@ def get_cli_arguments():
     parser = argparse.ArgumentParser(description='scrape profiles from OkCupid')
     parser.add_argument('mode', type=str, help=conf.mode_help)
     parser.add_argument('--write_csv', type=str, help='name for csv file the query result will be written to')
-    parser.add_argument('-n','--num', type=str, help='number of profiles to scrape for each profile type')
+    parser.add_argument('-n', '--num', type=str, help='number of profiles to scrape for each profile type')
     for kind, options in DICT_DATA.items():
         if kind == 'religion':
             parser.add_argument('-rl', '--religioness', nargs='+', help='religion to query based on.\
@@ -46,28 +45,29 @@ def get_cli_arguments():
             parser.add_argument('-lfc', '--connection_type', nargs='+', help='connection type to query based on.\
                          syntax: "label1 label2 label3". options: {}'.format(kind, DICT_DATA['looking_for_connection']))
         else:
-            parser.add_argument('-{}'.format(kind[0:3]),'--{}'.format(kind),nargs='+', help='{} to query based on.\
+            parser.add_argument('-{}'.format(kind[0:3]), '--{}'.format(kind), nargs='+', help='{} to query based on.\
              syntax: "label1 label2 label3". options: {}'.format(kind, DICT_DATA[kind]))
-    parser.add_argument('-p','--number_of_pics',nargs='+', help='number of pics in the profile, as a range: min max')
-    parser.add_argument('-a', '--age', nargs='+',help='age of the profile, as a range: min max')
-    parser.add_argument('-c', '--mysqlcreds', nargs='+',help='username and password for mySQL server: username password')
+    parser.add_argument('-p', '--number_of_pics', nargs='+', help='number of pics in the profile, as a range: min max')
+    parser.add_argument('-a', '--age', nargs='+', help='age of the profile, as a range: min max')
+    parser.add_argument('-c', '--mysqlcreds', nargs='+',
+                        help='username and password for mySQL server: username password')
     parser.add_argument('-i', '--information', nargs='+', help=conf.information_to_show_help)
     args = parser.parse_args()
 
     # checking mode is a valid value
-    if args.mode not in ['read','write','print']:
+    if args.mode not in ['read', 'write', 'print']:
         exp = 'please provide a valid mode to operate in! modes can be read, write or print.'
         raise Exception(exp)
 
     # if needed, making sure the valid number of profiles to scrape was given
-    if args.mode in ['write','print']:
+    if args.mode in ['write', 'print']:
         if not args.num or not args.num.isnumeric():
-            raise(Exception('please provide a number of profiles to scrape'))
+            raise (Exception('please provide a number of profiles to scrape'))
 
     # if needed, make sure username and password were provided:
     if args.mode in ['write', 'read']:
         if not args.mysqlcreds or len(args.mysqlcreds) != 2:
-            raise(Exception('please valid username and password'))
+            raise (Exception('please valid username and password'))
 
     # make sure values to scrape by are valid
     kinds = DICT_DATA.keys()
@@ -86,16 +86,16 @@ def get_cli_arguments():
                     valid_labels = DICT_DATA[kind]
                 for label in getattr(args, kind):
                     if label not in valid_labels:
-                        raise(Exception('label {} not an option in detail kind {}'.format(label, kind)))
+                        raise (Exception('label {} not an option in detail kind {}'.format(label, kind)))
 
         if args.number_of_pics:
-            if len(args.number_of_pics) != 2 or not args.number_of_pics[0].isnumeric() or\
-                                                                                not args.number_of_pics[1].isnumeric():
-                raise(Exception('please provide a valid number of pictures as range! (syntax: "min max")'))
+            if len(args.number_of_pics) != 2 or not args.number_of_pics[0].isnumeric() or \
+                    not args.number_of_pics[1].isnumeric():
+                raise (Exception('please provide a valid number of pictures as range! (syntax: "min max")'))
 
         if args.age:
             if len(args.age) != 2 or not args.age[0].isnumeric() or not args.age[1].isnumeric():
-                raise(Exception('please provide a valid age as range! (syntax: "min max")'))
+                raise (Exception('please provide a valid age as range! (syntax: "min max")'))
 
     # make sure column to show are valid
     if args.mode == 'read':
