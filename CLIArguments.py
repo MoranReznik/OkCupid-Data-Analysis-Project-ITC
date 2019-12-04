@@ -13,6 +13,7 @@ with open('choices.json') as json_file:
         DICT_DATA[lower_k] = values
 
 
+
 def get_cli_arguments():
     """ gets the relevant command line arguments and flags from the user.
 
@@ -35,6 +36,7 @@ def get_cli_arguments():
     # creating the flags
     parser = argparse.ArgumentParser(description='scrape profiles from OkCupid')
     parser.add_argument('mode', type=str, help=conf.mode_help)
+    parser.add_argument('--write_csv', type=str, help='name for csv file the query result will be written to')
     parser.add_argument('-n','--num', type=str, help='number of profiles to scrape for each profile type')
     for kind, options in DICT_DATA.items():
         if kind == 'religion':
@@ -123,7 +125,7 @@ def get_cli_arguments():
         conditions['looking_for_connection'] = conditions.pop('connection_type')
 
     if args.mode == 'read':
-        return [args.mode, args.mysqlcreds, conditions, args.information]
+        return [args.mode, args.mysqlcreds, conditions, args.information, args.write_csv]
     elif args.mode == 'write':
         return [args.mode, int(args.num), args.mysqlcreds]
     else:

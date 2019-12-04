@@ -1,6 +1,5 @@
 # pip install mysql-connector-python
 import mysql.connector
-import CreateDatabase
 
 username = "root"
 password = "KKkm73iaC2cnH3c#oMG$KD^JzA*f"
@@ -16,4 +15,4 @@ cur.execute(''' DROP DATABASE okcupid_project ''')
 con.commit()
 con.close()
 
-CreateDatabase.create_database()
+# CreateDatabase.create_database()

@@ -60,8 +60,6 @@ def update_database(mysql_cred, profile_data):
             #     sql = '''INSERT INTO %s (main_id, %s) VALUES ("%s", "%s")''' % (column, column, main_id, value)
             # cur.execute(sql)
 
-
-
             if type(value) == str:
                 value = [value]
             if exists:  # first delete old value and then insert new value (since there may be a different amount of

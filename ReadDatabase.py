@@ -55,9 +55,17 @@ def read_database(mysql_cred, information, conditions):
     tables = set(all_information + list(conditions.keys()))
     for table in tables:
         # if table not in ['age', 'height', 'location', 'num_pics']:
+        if table not in ['main_id', 'age', 'height', 'location', 'num_pics']:
+            join += "JOIN %s ON profiles.main_id = %s.main_id " % (table, table)
+
+    join2 = 'WHERE profiles.main_id IN (SELECT profiles.main_id as good_id FROM profiles '
+    tables = set(conditions.keys())
+    for table in tables:
+        # if table not in ['age', 'height', 'location', 'num_pics']:
         table = table.lower()##############################################################
         if table not in ['main_id', 'age', 'height', 'location', 'num_pics']:
-            join += "LEFT JOIN %s ON profiles.main_id = %s.main_id " % (table, table)
+            join2 += "JOIN %s ON profiles.main_id = %s.main_id " % (table, table)
+    print(join2)
 
     # WHERE condition
     if not conditions:
@@ -81,20 +89,15 @@ def read_database(mysql_cred, information, conditions):
 
                     # cond = '%' + cond + '%'
                     # where += " %s.%s  LIKE '%s' OR " % (category, category, cond)
-                where = where[:-4] + ')'
+                where = where[:-4] + '))'
 
-    sql = select + join + where + ' GROUP BY profiles.main_id'
+    sql = select + join + join2 + where + ' GROUP BY profiles.main_id'
+    print(select)
+    print(join)
+    print(join2)
+    print(where)
+
     df = pd.read_sql(sql, con)
     con.close()
 
     return df
-
-
-#
-# info = ['gender', 'age', 'tobacco', 'drugs', 'num_pics']
-# info = ['all']
-# cond = {}
-#
-# cond = {'gender': ['man', 'woman'], 'age': ['20', '30'], 'tobacco': ["doesn't smoke cigarettes"]}
-# dff = read_database(info, cond)
-# print(dff)

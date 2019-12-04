@@ -1,9 +1,7 @@
 # pip install mysql-connector-python
 import mysql.connector
 import json
-import conf
 import argparse
-
 
 
 """ creating MySQL database and tables, if they don't exist.
@@ -15,7 +13,7 @@ Other categories which have a finite number of options have their own table with
 # creating the flags
 parser = argparse.ArgumentParser(description='username and password for the creation of mySQL server')
 parser.add_argument('username', type=str, help='username')
-parser.add_argument('password', nargs=str, help='password')
+parser.add_argument('password', type=str, help='password')
 args = parser.parse_args()
 
 with open('choices.json') as json_file:

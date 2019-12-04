@@ -55,11 +55,12 @@ def main():
               ' profiles attempted')
 
     if mode == 'read':
-        _, mysql_cred, conditions, information = parameters
+        _, mysql_cred, conditions, information, csv_name = parameters
         df = ReadDatabase.read_database(mysql_cred, information, conditions)
-        # with pd.option_context('display.max_rows', None, 'display.max_columns',
-        #                        None):  # more options can be specified also
-        print(df)
+        if csv_name:
+            df.to_csv(csv_name)
+        else:
+            print(df)
 
 
 if __name__ == '__main__':
