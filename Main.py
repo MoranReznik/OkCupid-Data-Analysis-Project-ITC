@@ -6,7 +6,7 @@ import WaitForProfileToLoad
 import UpdateDatabase
 import logging
 import CLIArguments
-import GV
+import conf
 import mysql.connector
 
 
@@ -19,7 +19,7 @@ def main():
 
     if mode in ['print', 'write']:
         num_to_scrape = parameters[1]
-        for main_profile_name, login_details in GV.PROFILES.items():
+        for main_profile_name, login_details in conf.PROFILES.items():
             try:
                 driver = SiteLogin.site_login(login_details)
             except Exception as e:
@@ -51,7 +51,7 @@ def main():
 
             driver.close()
 
-        print('extracted data from ' + str(counter) + ' out of ' + str(num_to_scrape * len(GV.PROFILES)) +
+        print('extracted data from ' + str(counter) + ' out of ' + str(num_to_scrape * len(conf.PROFILES)) +
               ' profiles attempted')
 
     if mode == 'read':

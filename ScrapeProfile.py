@@ -1,7 +1,7 @@
 import bs4
 import FindKindOfDetail
 import ParseInfo as Pi
-import GV
+import conf
 
 
 def scrape_profile(driver, profile_id, num_pics, mode):
@@ -94,5 +94,5 @@ def scrape_profile(driver, profile_id, num_pics, mode):
     print(data)
 
     driver.find_elements_by_id("pass-button")[1].send_keys('\n')
-    driver.get(GV.HOME_URL)
+    driver.get(conf.HOME_URL)
     return driver, data

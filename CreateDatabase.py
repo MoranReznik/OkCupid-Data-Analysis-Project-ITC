@@ -1,7 +1,7 @@
 # pip install mysql-connector-python
 import mysql.connector
 import json
-import GV
+import conf
 import argparse
 
 

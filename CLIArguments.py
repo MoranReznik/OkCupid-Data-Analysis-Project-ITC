@@ -1,5 +1,5 @@
 import argparse
-import GV
+import conf
 import json
 
 with open('choices.json') as json_file:
@@ -34,7 +34,7 @@ def get_cli_arguments():
 
     # creating the flags
     parser = argparse.ArgumentParser(description='scrape profiles from OkCupid')
-    parser.add_argument('mode', type=str, help=GV.mode_help)
+    parser.add_argument('mode', type=str, help=conf.mode_help)
     parser.add_argument('-n','--num', type=str, help='number of profiles to scrape for each profile type')
     for kind, options in DICT_DATA.items():
         if kind == 'religion':
@@ -49,7 +49,7 @@ def get_cli_arguments():
     parser.add_argument('-p','--number_of_pics',nargs='+', help='number of pics in the profile, as a range: min max')
     parser.add_argument('-a', '--age', nargs='+',help='age of the profile, as a range: min max')
     parser.add_argument('-c', '--mysqlcreds', nargs='+',help='username and password for mySQL server: username password')
-    parser.add_argument('-i', '--information', nargs='+', help=GV.information_to_show_help)
+    parser.add_argument('-i', '--information', nargs='+', help=conf.information_to_show_help)
     args = parser.parse_args()
 
     # checking mode is a valid value

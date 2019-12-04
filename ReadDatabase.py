@@ -1,5 +1,5 @@
 import mysql.connector
-import GV
+import conf
 import pandas as pd
 
 

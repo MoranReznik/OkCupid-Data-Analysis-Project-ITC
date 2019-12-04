@@ -1,7 +1,7 @@
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 import time
-import GV
+import conf
 
 
 def site_login(login_details):
@@ -24,8 +24,8 @@ def site_login(login_details):
     chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--headless")
-    driver = webdriver.Chrome(executable_path=GV.CHROME_DRIVER_PATH, options=chrome_options)
-    driver.get(GV.LOGIN_URL)
+    driver = webdriver.Chrome(executable_path=conf.CHROME_DRIVER_PATH, options=chrome_options)
+    driver.get(conf.LOGIN_URL)
 
     # enter the login details
     driver.find_element_by_name("username").send_keys(login_details["user"])
@@ -34,7 +34,7 @@ def site_login(login_details):
     url = driver.current_url
 
     # making sure page is loaded and returning the driver
-    while url == GV.LOGIN_URL:
+    while url == conf.LOGIN_URL:
         time.sleep(1)
         url = driver.current_url
     return driver

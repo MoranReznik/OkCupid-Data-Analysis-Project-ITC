@@ -1,5 +1,5 @@
 import bs4
-import GV
+import conf
 
 
 def enter_profile(driver):
@@ -33,7 +33,7 @@ def enter_profile(driver):
     # finding the url if the profile page and entering it
     address = soup.find(class_="cardsummary-item cardsummary-profile-link").find('a', href=True)['href']
     profile_id = address.split('/')[-1].split('?')[0]
-    profile_url = GV.SITE_URL + address
+    profile_url = conf.SITE_URL + address
     driver.get(profile_url)
 
     return driver, num_pics, profile_id
