@@ -14,5 +14,3 @@ cur.execute(''' DROP DATABASE okcupid_project ''')
 
 con.commit()
 con.close()
-
-# CreateDatabase.create_database()
