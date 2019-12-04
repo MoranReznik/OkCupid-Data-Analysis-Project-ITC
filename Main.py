@@ -27,7 +27,7 @@ def main():
                 continue
 
             for i in range(1, num_to_scrape + 1):
-                # try:  # in case the program crushes, restart and complete the task
+                try:  # in case the program crushes, restart and complete the task
                     print("%s: page number %s" % (main_profile_name, str(i)))
                     profile_driver_unloaded, num_pics, profile_id = EnterProfile.enter_profile(driver)
                     profile_driver_loaded = WaitForProfileToLoad.wait_for_profile_to_load(profile_driver_unloaded)
@@ -35,19 +35,18 @@ def main():
                         profile_driver_loaded, profile_id, num_pics, mode)
                     if mode == 'write':
                         mysql_cred = parameters[2]
-                        # try:
-                        UpdateDatabase.update_database(mysql_cred, profile_data)
-                        # except Exception as e:
-                        #     print('Please CreateDatabase before UpdateDatabase: ', e)
-                        #     exit()
+                        try:
+                            UpdateDatabase.update_database(mysql_cred, profile_data)
+                        except mysql.connector.Error as err:
+                            print("Something went wrong: {}".format(err))
                     counter += 1
 
-                # except Exception as e:
-                #     print('Error: %s' % e)
-                #     print('Problem loading the data. moving to the next person.')
-                #     driver.close()
-                #     driver = SiteLogin.site_login(login_details)
-                #     logging.exception(e)
+                except Exception as e:
+                    print('Error: %s' % e)
+                    print('Problem loading the data. moving to the next person.')
+                    driver.close()
+                    driver = SiteLogin.site_login(login_details)
+                    logging.exception(e)
 
             driver.close()
 
