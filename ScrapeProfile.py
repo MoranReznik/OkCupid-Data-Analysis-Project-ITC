@@ -44,7 +44,7 @@ def scrape_profile(driver, profile_id, num_pics, mode):
     location = soup.find(class_="profile-basics-asl-location").get_text()
 
     # taking all the details
-    data = {'Profile_id': profile_id, 'Age': age, 'Location': location, 'Num_pics': num_pics}
+    data = {'profile_id': profile_id, 'age': age, 'location': location, 'num_pics': num_pics}
 
     details_temp = [detail.get_text() for detail in soup.find_all(class_="matchprofile-details-text")]
     # splitting data that is separated by a comma
@@ -57,20 +57,40 @@ def scrape_profile(driver, profile_id, num_pics, mode):
         # parse detail
         detail = Pi.parse_info(detail, kind)
         # handling several kinds of details that are formatted in a special way
-        if kind == 'Religion':
+        if kind == 'religion':
             if len(detail) > 1:
-                data['Religion'] = detail[0]
-                data['Religion_importance'] = detail[1]
+                data['religion'] = detail[0]
+                data['religion_importance'] = detail[1]
             else:
-                data['Religion'] = detail[0]
+                data['religion'] = detail[0]
 
-        elif kind == 'Looking_for_gender':
-            data["Looking_for_gender"] = detail[0]
-            data["Looking_for_connection"] = detail[1]
+        elif kind == 'looking_for_gender':
+            data["looking_for_gender"] = detail[0]
+            data["looking_for_connection"] = detail[1]
+
+        elif kind == 'speaks' and 'speaks' in data:
+            data[kind] += detail
 
         else:
             data[kind] = detail
+    if 'relationship_Type' in data:
+        print('\n\n')
+        rt = data['relationship_Type']
 
+        for gen in ['man','women','people']:
+            if gen in rt:
+                data["looking_for_gender"] = gen
+                if 'non' in rt:
+                    data['Relationship_Type'] = 'non-monogamous'
+                else:
+                    data['Relationship_Type'] = 'monogamous'
+        for con in ["short", "long", "hookups", "friends"]:
+            if con in rt:
+                data["Looking_for_connection"] = con
+            if 'non' in rt:
+                data['Relationship_Type'] = 'non-monogamous'
+            else:
+                data['Relationship_Type'] = 'monogamous'
     print(data)
 
     driver.find_elements_by_id("pass-button")[1].send_keys('\n')

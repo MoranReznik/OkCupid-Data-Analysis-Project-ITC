@@ -4,6 +4,13 @@ import json
 
 with open('choices.json') as json_file:
     DICT_DATA = json.load(json_file)
+    for k, v in DICT_DATA.items():
+        lower_k = k.lower()
+        DICT_DATA[lower_k] = DICT_DATA.pop(k)
+        values = []
+        for i in v:
+            values.append(i.lower())
+    DICT_DATA[lower_k] = values
 
 def get_cli_arguments():
     """ gets the relevant command line arguments and flags from the user.
@@ -29,12 +36,12 @@ def get_cli_arguments():
     parser.add_argument('mode', type=str, help=GV.mode_help)
     parser.add_argument('-n','--num', type=str, help='number of profiles to scrape for each profile type')
     for kind, options in DICT_DATA.items():
-        if kind == 'Religion':
-            parser.add_argument('-rl', '--religioness', nargs='+', help='Religion to query based on.\
-                         syntax: "label1 label2 label3". options: {}'.format(DICT_DATA['Religion']))
-        elif kind == 'Looking_for_connection':
+        if kind == 'religion':
+            parser.add_argument('-rl', '--religioness', nargs='+', help='religion to query based on.\
+                         syntax: "label1 label2 label3". options: {}'.format(DICT_DATA['religion']))
+        elif kind == 'looking_for_connection':
             parser.add_argument('-lfc', '--connection_type', nargs='+', help='connection type to query based on.\
-                         syntax: "label1 label2 label3". options: {}'.format(kind, DICT_DATA['Looking_for_connection']))
+                         syntax: "label1 label2 label3". options: {}'.format(kind, DICT_DATA['looking_for_connection']))
         else:
             parser.add_argument('-{}'.format(kind[0:3]),'--{}'.format(kind),nargs='+', help='{} to query based on.\
              syntax: "label1 label2 label3". options: {}'.format(kind, DICT_DATA[kind]))
@@ -63,13 +70,13 @@ def get_cli_arguments():
     kinds = DICT_DATA.keys()
     if args.mode == 'read':
         for kind in kinds:
-            if kind == 'Religion':
+            if kind == 'religion':
                 kind = 'religioness'
-            elif kind == 'Looking_for_connection':
+            elif kind == 'looking_for_connection':
                 kind = 'connection_type'
             if getattr(args, kind):
                 if kind == 'religioness':
-                    valid_labels = DICT_DATA['Religion']
+                    valid_labels = DICT_DATA['religion']
                 elif kind == 'connection_type':
                     valid_labels = DICT_DATA['connection_type']
                 else:
@@ -98,9 +105,9 @@ def get_cli_arguments():
     conditions = {}
     if args.mode == 'read':
         for kind in kinds:
-            if kind == 'Religion':
+            if kind == 'religion':
                 kind = 'religioness'
-            elif kind == 'Looking_for_connection':
+            elif kind == 'looking_for_connection':
                 kind = 'connection_type'
             if getattr(args, kind):
                 conditions[kind] = getattr(args, kind)
@@ -110,9 +117,9 @@ def get_cli_arguments():
         conditions['age'] = args.age
 
     if 'religioness' in conditions:
-        conditions['Religion'] = conditions.pop('religioness')
+        conditions['religion'] = conditions.pop('religioness')
     if 'connection_type' in conditions:
-        conditions['Looking_for_connection'] = conditions.pop('connection_type')
+        conditions['looking_for_connection'] = conditions.pop('connection_type')
 
     if args.mode == 'read':
         return [args.mode, args.mysqlcreds, conditions, args.information]

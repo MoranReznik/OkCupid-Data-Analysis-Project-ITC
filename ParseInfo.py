@@ -16,27 +16,30 @@ def parse_info(detail, kind):
     """
 
     if kind == 'speaks':
-
-        detail = detail[7:]  # remove the word speaks from the string
-        languages = detail.replace('and', ',')
-        languages = languages.replace(', some', ',')
-        languages = languages.split(',')
-        for index, language in enumerate(languages):
-            languages[index] = language.strip(' ')
+        detail = detail.replace(',', '')
+        languages = detail.split(' ')
+        if 'Speaks' in languages:
+            languages.remove('Speaks')
+        if 'and' in languages:
+            languages.remove('and')
+        if 'some' in languages:
+            languages.remove('some')
+        if '' in languages:
+            languages.remove('')
         return languages
 
-    elif kind == 'Religion':
+    elif kind == 'religion':
         detail = detail.split(' (')
         if len(detail) > 1:
             return [detail[0],  detail[1][:-1]]
         else:
-            return detail[0]
+            return [detail[0][1:]]
 
-    elif kind == 'Height':
-        detail = detail[:-2]
+    elif kind == 'height':
+        detail = detail[1:-2]
         return detail
 
-    elif kind == 'Looking_for_gender':
+    elif kind == 'looking_for_gender':
         detail = detail[12:]
         detail = detail.replace("short-term", 'short')
         detail = detail.replace("long-term", 'long')
