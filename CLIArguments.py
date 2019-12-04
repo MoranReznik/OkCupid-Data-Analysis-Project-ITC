@@ -80,7 +80,7 @@ def get_cli_arguments():
 
         if args.number_of_pics:
             if len(args.number_of_pics) != 2 or not args.number_of_pics[0].isnumeric() or\
-                                                                                args.number_of_pics[1].isnumeric():
+                                                                                not args.number_of_pics[1].isnumeric():
                 raise(Exception('please provide a valid number of pictures as range! (syntax: "min max")'))
 
         if args.age:
@@ -91,7 +91,7 @@ def get_cli_arguments():
     if args.mode == 'read':
         if args.information:
             for info in args.information:
-                if info not in kinds and info != 'num_pics':
+                if info not in kinds and info not in ['Num_pics', 'Age', 'Height', 'Location', 'Religion_importance']:
                     raise (Exception('detail kind {} does not exist'.format(info)))
 
     # arrange dict of parameters to query database based on

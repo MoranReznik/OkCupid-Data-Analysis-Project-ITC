@@ -1,8 +1,11 @@
 # pip install mysql-connector-python
 import mysql.connector
 import json
-import GV
 
+
+# CreateDatabase.py
+username = "root"
+password = "KKkm73iaC2cnH3c#oMG$KD^JzA*f"
 
 def create_database():
     """ creating MySQL database and tables, if they don't exist.
@@ -18,7 +21,7 @@ def create_database():
     columns += ['Religion_importance']
 
     con = mysql.connector.connect(
-        host='localhost', user=GV.MYSQL_USERNAME, passwd=GV.MYSQL_PASSWORD, auth_plugin='mysql_native_password')
+        host='localhost', user=username, passwd=password, auth_plugin='mysql_native_password')
     cur = con.cursor()
 
     cur.execute(''' CREATE DATABASE IF NOT EXISTS okcupid_project ''')

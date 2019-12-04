@@ -57,6 +57,8 @@ def main():
     if mode == 'read':
         _, mysql_cred, conditions, information = parameters
         df = ReadDatabase.read_database(mysql_cred, information, conditions)
+        # with pd.option_context('display.max_rows', None, 'display.max_columns',
+        #                        None):  # more options can be specified also
         print(df)
 
 
