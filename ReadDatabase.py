@@ -3,7 +3,7 @@ import GV
 import pandas as pd
 
 
-def read_database(information, conditions):
+def read_database(mysql_cred, information, conditions):
     """ Reads from the database all the wanted information according to the wanted conditions
 
             Parameters
@@ -20,15 +20,17 @@ def read_database(information, conditions):
                 DataFrame consisting of wanted categories according to the conditions
     """
 
-    con = mysql.connector.connect(host='localhost', user=GV.MYSQL_USERNAME, passwd=GV.MYSQL_PASSWORD,
+    username, password = mysql_cred
+    con = mysql.connector.connect(host='localhost', user=username, passwd=password,
                                   auth_plugin='mysql_native_password')
     cur = con.cursor()
     cur.execute(''' USE okcupid_project ''')
 
     # SELECT columns
     select = 'SELECT '
-    all_information = information.copy()
-    if information == ['all']:  # Extract the list of all categories to output
+    if information:
+        all_information = information.copy()
+    if not information:  # Extract the list of all categories to output
         cur.execute("SHOW TABLES")
         categories = cur.fetchall()
         all_information = ['age', 'height', 'location', 'num_pics']
@@ -70,14 +72,15 @@ def read_database(information, conditions):
     sql = select + join + where
     df = pd.read_sql(sql, con)
     con.close()
+
     return df
 
 
-
-info = ['gender', 'age', 'tobacco', 'drugs', 'num_pics']
-info = ['all']
-cond = {}
-
-cond = {'gender': ['man', 'woman'], 'age': ['20', '30'], 'tobacco': ["doesn't smoke cigarettes"]}
-df = read_database(info, cond)
-print(df)
+#
+# info = ['gender', 'age', 'tobacco', 'drugs', 'num_pics']
+# info = ['all']
+# cond = {}
+#
+# cond = {'gender': ['man', 'woman'], 'age': ['20', '30'], 'tobacco': ["doesn't smoke cigarettes"]}
+# dff = read_database(info, cond)
+# print(dff)

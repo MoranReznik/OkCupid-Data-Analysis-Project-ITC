@@ -12,16 +12,16 @@ def get_cli_arguments():
             -------
             if mode is 'read'
             args : list
-                list of arguments: [username, password], parameters to query based on as \
+                list of arguments: mode, [username, password], parameters to query based on as \
                 a dict, information to show on profiles
 
             if mode is 'write'
             args : list
-                list of arguments: [username, password], number of profiles to scrape
+                list of arguments: mode, [username, password], number of profiles to scrape
 
              if mode is 'print'
             args : list
-                list of arguments: number of profiles to scrape
+                list of arguments: mode, number of profiles to scrape
     """
 
     # creating the flags
@@ -115,8 +115,8 @@ def get_cli_arguments():
         conditions['Looking_for_connection'] = conditions.pop('connection_type')
 
     if args.mode == 'read':
-        return [args.mysqlcreds, conditions, args.information]
+        return [args.mode, args.mysqlcreds, conditions, args.information]
     elif args.mode == 'write':
-        return [args.mysqlcreds, args.num]
+        return [args.mode, int(args.num), args.mysqlcreds]
     else:
-        return [args.num]
+        return [args.mode, int(args.num)]
