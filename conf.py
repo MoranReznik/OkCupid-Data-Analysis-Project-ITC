@@ -28,3 +28,5 @@ information_to_show_help = '''what information to scrape from each profile, if a
                    Ethnicity, speaks, Politics, Education, Religion, Tobacco, Drinks, Drugs, Marijuana, Kids,
                    Pets, Sign, Diet, Looking_for_gender, Looking_for_connection, number_of_pics'''
 
+# json file with all the different ok_cupid option
+JSON = 'choices.json'

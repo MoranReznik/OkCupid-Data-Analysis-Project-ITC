@@ -22,9 +22,6 @@ def scrape_profile(driver, profile_id, num_pics):
             num_pics : int
                 the number of pictures the user uploaded of himself (given by the enter_profile function)
 
-            required_details : list
-                a list of the kind of details the user wants to collect about the OkCupid profiles.
-
             Returns
             -------
             driver : selenium webdrivre object
@@ -41,14 +38,12 @@ def scrape_profile(driver, profile_id, num_pics):
     soup = bs4.BeautifulSoup(content, 'html.parser')
     # finding and getting the data from the page
     age = soup.find(class_="profile-basics-asl-age").get_text()
-    location = soup.find(class_="profile-basics-asl-location").get_text()
+    location = soup.find(class_="profile-basics-asl-location").get_text().lower()
 
     # taking all the details
     data = {'profile_id': profile_id, 'age': age, 'location': location, 'num_pics': num_pics}
+    details_temp = [detail.get_text().lower() for detail in soup.find_all(class_="matchprofile-details-text")]
 
-    details_temp = [detail.get_text() for detail in soup.find_all(class_="matchprofile-details-text")]
-    print(details_temp)
-    print('\n')
     # splitting data that is separated by a comma
     for detail in details_temp:
         details += detail.split(',')
@@ -75,25 +70,28 @@ def scrape_profile(driver, profile_id, num_pics):
         else:
             data[kind] = detail
 
-    if 'relationship_Type' in data:
-        print('\n\n')
-        rt = data['relationship_Type']
+    if 'relationship_type' in data:
+        rt = data['relationship_type']
 
         for gen in ['man', 'women', 'people']:
             if gen in rt:
                 data["looking_for_gender"] = gen
                 if 'non' in rt:
-                    data['Relationship_Type'] = 'non-monogamous'
+                    data['relationship_type'] = 'non-monogamous'
                 else:
-                    data['Relationship_Type'] = 'monogamous'
+                    data['relationship_type'] = 'monogamous'
         for con in ["short", "long", "hookups", "friends"]:
             if con in rt:
-                data["Looking_for_connection"] = con
+                data["looking_for_connection"] = con
             if 'non' in rt:
-                data['Relationship_Type'] = 'non-monogamous'
+                data['relationship_type'] = 'non-monogamous'
             else:
-                data['Relationship_Type'] = 'monogamous'
-    print(data)
+                data['relationship_type'] = 'monogamous'
     driver.find_elements_by_id("pass-button")[1].send_keys('\n')
     driver.get(conf.HOME_URL)
+
+    if 'speaks' in data:
+        if 'speaks' in data['speaks']:
+            data['speaks'].remove('speaks')
+
     return driver, data

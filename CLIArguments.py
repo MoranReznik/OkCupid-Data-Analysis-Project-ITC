@@ -2,16 +2,6 @@ import argparse
 import conf
 import json
 
-with open('choices.json') as json_file:
-    DICT_DATA = json.load(json_file)
-    for k, v in DICT_DATA.items():
-        lower_k = k.lower()
-        DICT_DATA[lower_k] = DICT_DATA.pop(k)
-        values = []
-        for i in v:
-            values.append(i.lower())
-        DICT_DATA[lower_k] = values
-
 
 def get_cli_arguments():
     """ gets the relevant command line arguments and flags from the user.
@@ -32,21 +22,24 @@ def get_cli_arguments():
                 list of arguments: mode, number of profiles to scrape
     """
 
+    with open(conf.JSON) as json_file:
+        dict_data = json.load(json_file)
+
     # creating the flags
     parser = argparse.ArgumentParser(description='scrape profiles from OkCupid')
     parser.add_argument('mode', type=str, help=conf.mode_help)
     parser.add_argument('--write_csv', type=str, help='name for csv file the query result will be written to')
     parser.add_argument('-n', '--num', type=str, help='number of profiles to scrape for each profile type')
-    for kind, options in DICT_DATA.items():
+    for kind, options in dict_data.items():
         if kind == 'religion':
             parser.add_argument('-rl', '--religioness', nargs='+', help='religion to query based on.\
-                         syntax: "label1 label2 label3". options: {}'.format(DICT_DATA['religion']))
+                         syntax: "label1 label2 label3". options: {}'.format(dict_data['religion']))
         elif kind == 'looking_for_connection':
             parser.add_argument('-lfc', '--connection_type', nargs='+', help='connection type to query based on.\
-                         syntax: "label1 label2 label3". options: {}'.format(kind, DICT_DATA['looking_for_connection']))
+                         syntax: "label1 label2 label3". options: {}'.format(kind, dict_data['looking_for_connection']))
         else:
             parser.add_argument('-{}'.format(kind[0:3]), '--{}'.format(kind), nargs='+', help='{} to query based on.\
-             syntax: "label1 label2 label3". options: {}'.format(kind, DICT_DATA[kind]))
+             syntax: "label1 label2 label3". options: {}'.format(kind, dict_data[kind]))
     parser.add_argument('-p', '--number_of_pics', nargs='+', help='number of pics in the profile, as a range: min max')
     parser.add_argument('-a', '--age', nargs='+', help='age of the profile, as a range: min max')
     parser.add_argument('-c', '--mysqlcreds', nargs='+',
@@ -70,7 +63,7 @@ def get_cli_arguments():
             raise (Exception('please valid username and password'))
 
     # make sure values to scrape by are valid
-    kinds = DICT_DATA.keys()
+    kinds = dict_data.keys()
     if args.mode == 'read':
         for kind in kinds:
             if kind == 'religion':
@@ -79,11 +72,11 @@ def get_cli_arguments():
                 kind = 'connection_type'
             if getattr(args, kind):
                 if kind == 'religioness':
-                    valid_labels = DICT_DATA['religion']
+                    valid_labels = dict_data['religion']
                 elif kind == 'connection_type':
-                    valid_labels = DICT_DATA['connection_type']
+                    valid_labels = dict_data['connection_type']
                 else:
-                    valid_labels = DICT_DATA[kind]
+                    valid_labels = dict_data[kind]
                 for label in getattr(args, kind):
                     if label not in valid_labels:
                         raise (Exception('label {} not an option in detail kind {}'.format(label, kind)))

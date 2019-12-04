@@ -1,14 +1,5 @@
 import json
-
-with open('choices.json') as json_file:
-    DICT_DATA = json.load(json_file)
-    for k, v in DICT_DATA.items():
-        lower_k = k.lower()
-        DICT_DATA[lower_k] = DICT_DATA.pop(k)
-        values = []
-        for i in v:
-            values.append(i.lower())
-    DICT_DATA[lower_k] = values
+import conf
 
 
 def find_kind_of_detail(string):
@@ -28,10 +19,13 @@ def find_kind_of_detail(string):
                 the category of the input detail
     """
 
-    for key, values in DICT_DATA.items():
+    with open(conf.JSON) as json_file:
+        dict_data = json.load(json_file)
+
+    for key, values in dict_data.items():
         for value in values:
             if value.lower() in string.lower():
-                if key == 'status' and 'Looking' not in string:
+                if key == 'status' and 'looking' not in string:
                     return 'status'
                 elif key == 'status':
                     continue

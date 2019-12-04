@@ -33,7 +33,9 @@ def main():
                     profile_driver_unloaded, num_pics, profile_id = EnterProfile.enter_profile(driver)
                     profile_driver_loaded = WaitForProfileToLoad.wait_for_profile_to_load(profile_driver_unloaded)
                     driver, profile_data = Scrape.scrape_profile(
-                        profile_driver_loaded, profile_id, num_pics, mode)
+                        profile_driver_loaded, profile_id, num_pics)
+                    if mode == 'print':
+                        print(profile_data)
                     if mode == 'write':
                         mysql_cred = parameters[2]
                         try:
@@ -55,12 +57,15 @@ def main():
               ' profiles attempted')
 
     if mode == 'read':
-        _, mysql_cred, conditions, information, csv_name = parameters
-        df = ReadDatabase.read_database(mysql_cred, information, conditions)
-        if csv_name:
-            df.to_csv(csv_name)
-        else:
-            print(df)
+        try:
+            _, mysql_cred, conditions, information, csv_name = parameters
+            df = ReadDatabase.read_database(mysql_cred, information, conditions)
+            if csv_name:
+                df.to_csv(csv_name)
+            else:
+                print(df)
+        except mysql.connector.Error as err:
+            print("Something went wrong: {}".format(err))
 
 
 if __name__ == '__main__':

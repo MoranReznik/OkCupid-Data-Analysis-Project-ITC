@@ -2,6 +2,7 @@
 import mysql.connector
 import json
 import argparse
+import conf
 
 
 """ creating MySQL database and tables, if they don't exist.
@@ -16,11 +17,11 @@ parser.add_argument('username', type=str, help='username')
 parser.add_argument('password', type=str, help='password')
 args = parser.parse_args()
 
-with open('choices.json') as json_file:
+with open(conf.JSON) as json_file:
     columns = list(json.load(json_file).keys())
 
-columns.remove('Height')
-columns += ['Religion_importance']
+columns.remove('height')
+columns += ['religion_importance']
 
 con = mysql.connector.connect(
     host='localhost', user=args.username, passwd=args.password, auth_plugin='mysql_native_password')
@@ -30,8 +31,8 @@ cur.execute(''' CREATE DATABASE IF NOT EXISTS okcupid_project ''')
 cur.execute(''' USE okcupid_project ''')
 
 sql = ''' CREATE TABLE IF NOT EXISTS profiles
-(main_id INT NOT NULL AUTO_INCREMENT, Profile_id VARBINARY(255) NOT NULL UNIQUE, Age INT DEFAULT NULL, 
-Height INT DEFAULT NULL, Location VARCHAR(255) DEFAULT NULL, Num_pics INT DEFAULT NULL, PRIMARY KEY (main_id)) '''
+(main_id INT NOT NULL AUTO_INCREMENT, profile_id VARBINARY(255) NOT NULL UNIQUE, age INT DEFAULT NULL, 
+height INT DEFAULT NULL, location VARCHAR(255) DEFAULT NULL, num_pics INT DEFAULT NULL, PRIMARY KEY (main_id)) '''
 
 cur.execute(sql)
 

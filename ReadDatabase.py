@@ -1,18 +1,20 @@
 import mysql.connector
-import conf
 import pandas as pd
 
 
 def read_database(mysql_cred, information, conditions):
     """ Reads from the database all the wanted information according to the wanted conditions
 
-            Parameters
+            mysql_cred
             ----------
+            mysql_cred : list
+                list with MYSQL username and password from the CLI arguments.
+
             information : list
                 wanted categories to output
+
             conditions : dictionary
                 according to which conditions to output
-
 
             Returns
             -------
@@ -26,26 +28,24 @@ def read_database(mysql_cred, information, conditions):
     cur = con.cursor()
     cur.execute(''' USE okcupid_project ''')
 
+    profiles_columns = ['age', 'height', 'location', 'num_pics']
+
     # SELECT columns
     select = 'SELECT '
     if information:
         all_information = information.copy()
-    if not information:  # Extract the list of all categories to output
+    else:  # if user want to read all the data, extract the list of all categories to output
         cur.execute("SHOW TABLES")
         categories = cur.fetchall()
         all_information = ['age', 'height', 'location', 'num_pics']
-        all_information = ['main_id', 'age', 'height', 'location', 'num_pics']
         for category in categories:
             all_information += [category[0]]
         all_information.remove('profiles')
 
     for category in all_information:
-        category = category.lower()#############################################
         if select != 'SELECT ':
             select += ', '
-        # if category in ['age', 'height', 'location', 'num_pics']:
-
-        if category in ['main_id', 'age', 'height', 'location', 'num_pics']:
+        if category in profiles_columns:
             select += 'GROUP_CONCAT(DISTINCT(profiles.%s)) AS %s' % (category, category)
         else:
             select += 'GROUP_CONCAT(DISTINCT(%s.%s)) AS %s' % (category, category, category)
@@ -54,18 +54,15 @@ def read_database(mysql_cred, information, conditions):
     join = ' FROM profiles '
     tables = set(all_information + list(conditions.keys()))
     for table in tables:
-        # if table not in ['age', 'height', 'location', 'num_pics']:
-        if table not in ['main_id', 'age', 'height', 'location', 'num_pics']:
-            join += "JOIN %s ON profiles.main_id = %s.main_id " % (table, table)
+        if table not in profiles_columns:
+            join += "LEFT JOIN %s ON profiles.main_id = %s.main_id " % (table, table)
 
-    join2 = 'WHERE profiles.main_id IN (SELECT profiles.main_id as good_id FROM profiles '
+    # WHERE profiles.main_id IN (
+    where_in = 'WHERE profiles.main_id IN (SELECT profiles.main_id as good_id FROM profiles '
     tables = set(conditions.keys())
     for table in tables:
-        # if table not in ['age', 'height', 'location', 'num_pics']:
-        table = table.lower()##############################################################
-        if table not in ['main_id', 'age', 'height', 'location', 'num_pics']:
-            join2 += "JOIN %s ON profiles.main_id = %s.main_id " % (table, table)
-    print(join2)
+        if table not in profiles_columns:
+            where_in += "LEFT JOIN %s ON profiles.main_id = %s.main_id " % (table, table)
 
     # WHERE condition
     if not conditions:
@@ -73,30 +70,17 @@ def read_database(mysql_cred, information, conditions):
     else:
         where = ' WHERE '
         for category, condition in conditions.items():
-            category = category.lower()  #############################################
             if where != ' WHERE ':
                 where += ' AND '
-
             if category in ['age', 'num_pics']:
                 where += '(profiles.%s BETWEEN %s AND %s)' % (category, condition[0], condition[1])
             else:
                 where += '('
                 for cond in condition:
-
                     where += " '%s' IN (%s.%s) OR " % (cond, category, category)
-                    # where += " '%s' IN STRING_SPLIT ( %s.%s , ',' ) OR " % (cond, category, category)
-                    # where += " '%s' IN SUBSTRING_INDEX ( %s.%s , ',' ,0) OR " % (cond, category, category)
+                where = where[:-4] + ')'
 
-                    # cond = '%' + cond + '%'
-                    # where += " %s.%s  LIKE '%s' OR " % (category, category, cond)
-                where = where[:-4] + '))'
-
-    sql = select + join + join2 + where + ' GROUP BY profiles.main_id'
-    print(select)
-    print(join)
-    print(join2)
-    print(where)
-
+    sql = select + join + where_in + where + ') GROUP BY profiles.main_id'
     df = pd.read_sql(sql, con)
     con.close()
 

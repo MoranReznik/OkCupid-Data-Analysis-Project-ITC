@@ -42,31 +42,22 @@ def update_database(mysql_cred, profile_data):
         cur.execute('SELECT LAST_INSERT_ID()')
         main_id = cur.fetchone()[0]
 
-    for column, value in profile_data.items():
+    for column, values in profile_data.items():
         # next: add the details relevant to the profiles table
         if column in ['age', 'height', 'location', 'num_pics']:
-            sql = ''' UPDATE profiles SET %s = "%s" WHERE main_id = "%s" ''' % (column, value, main_id)
+            sql = ''' UPDATE profiles SET %s = "%s" WHERE main_id = "%s" ''' % (column, values, main_id)
             cur.execute(sql)
 
         # finally: add the rest of the data to the relevant table
-        elif column and column != 'profile_id': #incase column is empty list.. REMOVE LATER
-            # # insert new value after deleting old value
-            # # value = str(value).replace('\'', '')   #################################################################
-            # if exists:
-            #     # update if values exist
-            #     sql = ''' UPDATE %s SET %s = "%s" WHERE main_id = "%s" ''' % (column, column, value, main_id)
-            # else:
-            #     # insert new value
-            #     sql = '''INSERT INTO %s (main_id, %s) VALUES ("%s", "%s")''' % (column, column, main_id, value)
-            # cur.execute(sql)
+        elif column and column != 'profile_id':  # in case column for some reason is an empty list..
 
-            if type(value) == str:
-                value = [value]
-            if exists:  # first delete old value and then insert new value (since there may be a different amount of
-                # old and new value)
+            if type(values) == str:
+                values = [values]
+            if exists:  # first delete old values and then insert new values (since there may be a different amount of
+                # old and new values)
                 sql = ''' DELETE FROM %s WHERE main_id="%s" ''' % (column, main_id)
                 cur.execute(sql)
-            for value in value:
+            for value in values:
                 sql = '''INSERT INTO %s (main_id, %s) VALUES ("%s", "%s")''' % (column, column, main_id, value)
                 cur.execute(sql)
 
