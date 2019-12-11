@@ -1,58 +1,105 @@
-def parse_info(detail, kind):
-    """ gets a detail and its associated detail kind, and parse it to a more human readable form
+def parse_info(data, details_temp, dict_data):
+    """ gets the data about the user and organizes it into a dictionary
 
             Parameters
             ----------
-            detail : string
-                the information about the person
-            kind: string
-                the category this info belongs to
+            data : dictionary
+                dictionary that hold some information about the profile
+
+            details_temp: list
+                list of unorganized strings that contain information about the user
+
+            dict_data: dictionary
+                a dictionary that contains all of the values possible for each category of detail
 
 
             Returns
             -------
-            detail : string
-                the input string parsed to a more human readable form
+            data : dictionary
+                dictionary that hold ALL information about the profile
     """
 
-    if kind == 'speaks':
-        detail = detail.replace(',', '')
-        languages = detail.split(' ')
-        if 'Speaks' in languages:
-            languages.remove('Speaks')
-        if 'and' in languages:
-            languages.remove('and')
-        if 'some' in languages:
-            languages.remove('some')
-        if '' in languages:
-            languages.remove('')
-        return languages
+    dets = []
 
-    elif kind == 'religion':
-        detail = detail.split(' (')
-        if len(detail) > 1:
-            return [detail[0],  detail[1][:-1]]
+    # languages that the user speaks
+    for details in details_temp:
+        if 'speaks' in details:
+            for value in dict_data['speaks']:
+                if value in details:
+                    if 'speaks' not in data:
+                        data['speaks'] = []
+                    data['speaks'] += [value]
+
+    # separating the data into a list. this is done after taking care of the languages since the languages sometimes
+    # contain commas of their own
+    for detail_list in details_temp:
+        details = detail_list.split(',')
+        dets += details
+
+    # for each detail on the profile, place into a data
+    for i, det in enumerate(dets):
+
+        # cleaning the detail
+        det = det.strip(' ')
+        det = det.replace('and ', '')
+        det = det.replace('attended ', '')
+
+        # height
+        if 'cm' in det:
+            data['height'] = det
+
+        # strings that starts with "looking for" have a special structure so we take care of them here
+        elif 'looking for ' in det:
+
+            data['looking_for_gender'] = []
+            data['looking_for_connection'] = []
+
+            if 'non' in det:
+                data['relationship_type'] = 'non-monogamous'
+            else:
+                data['relationship_type'] = 'monogamous'
+
+            for g in ['women', 'people']:
+                if g in det:
+                    if 'looking_for_gender' not in data:
+                        data['looking_for_gender'] = []
+                    data['looking_for_gender'] += [g]
+
+            man_ind = det.find('men')  # this code takes care of the problem that the word man is part of the word
+            if man_ind != -1:          # women
+                if det[man_ind - 1] != 'o':
+                    data['looking_for_gender'] = []
+                    data['looking_for_gender'] += ['man']
+
+
+            for c in ['long', 'short', 'friends', 'hookups']:
+                if c in det:
+                    if 'looking_for_connection' not in data:
+                        data['looking_for_connection'] = []
+                    data['looking_for_connection'] += [c]
+
+        # taking care of all the regular kind of details
         else:
-            return [detail[0][1:]]
+            for key, value in dict_data.items():
+                if det in value and key != 'speaks':  # make sure speaks is not overwritten
+                    data[key] = det
 
-    elif kind == 'height':
-        detail = detail[1:-2]
-        return detail
+                for rel in dict_data['religion']:  # taking care of the religion, which has a special structure
+                    if rel in det:
+                        if '(' in det:
+                            r = det.split('(')
+                            data['religion'] = r[0].strip(' ')
+                            data['religion_importance'] = r[1].strip(' ').strip(')')
+                        else:
+                            data['religion'] = rel
 
-    elif kind == 'looking_for_gender':
-        detail = detail[12:]
-        detail = detail.replace("short-term", 'short')
-        detail = detail.replace("long-term", 'long')
-        detail = detail.replace("and new", '')
-        detail = detail.replace(".", '')
-        detail = detail.split(' ')
-        connection = [i for i in detail if i in ["short", "long", "hookups", "friends"]]
-        gender = [i for i in detail if
-                  i in ['men', 'women', 'agenders', 'androgynes', 'bigenders', 'cis Men', 'cis Women',
-                        'genderfluids', 'genderqueers', 'genders nonconforming', 'hijras', 'intersexes',
-                        'non-binaries', 'others', 'pangenders', 'transfeminines', 'transgenders',
-                        'transmasculines', 'transsexuals', 'trans Men', 'trans Women', 'two Spirits']]
-        return [gender, connection]
+        if 'drink' in det:  # drinks also appears different in dict_data and in the site, so we fix it here
+            if "doesn't drink" in det:
+                data['drink'] = 'never drinks'
+            elif 'often' in det:
+                data['drink'] = 'drinks often'
 
-    elif kind:
-        return detail.strip()
+        if 'open to non-monogamy' in det: # taking care of the special case where the non-monogamy is stated separately
+            data['relationship_type'] = 'non-monogamous'
+
+    return data

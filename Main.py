@@ -1,13 +1,13 @@
 import EnterProfile
-import ReadDatabase
+# import ReadDatabase
 import ScrapeProfile as Scrape
 import SiteLogin
 import WaitForProfileToLoad
-import UpdateDatabase
+# import UpdateDatabase
 import logging
 import CLIArguments
 import conf
-import mysql.connector
+# import mysql.connector
 
 
 def main():
