@@ -42,7 +42,7 @@ def scrape_profile(driver, profile_id, num_pics):
     # finding the urls of the pictures of the users
     images_url = FindImageUrls.find_image_url(soup)
     img_profile = images_url[0]
-    img_compare = images_url[1:]
+    img_compare = tuple(images_url[1:])
     print(Api.api(img_profile, img_compare))
     # finding and getting the data from the page
     age = soup.find(class_="profile-basics-asl-age").get_text()
