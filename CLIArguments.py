@@ -60,7 +60,7 @@ def get_cli_arguments():
     # if needed, make sure username and password were provided:
     if args.mode in ['write', 'read']:
         if not args.mysqlcreds or len(args.mysqlcreds) != 2:
-            raise (Exception('please valid username and password'))
+            raise (Exception('please enter valid username and password'))
 
     # make sure values to scrape by are valid
     kinds = dict_data.keys()
