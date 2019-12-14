@@ -33,10 +33,10 @@ def api(img_profile, img_compare):
     response = requests.request("POST", url, data=payload, headers=headers)
     if response.json():
         result = response.json()[0]
-        api_dict['gender'] = result["gender"]["value"]
-        api_dict['age'] = round(result["age"])
+        api_dict['pred_gender'] = result["gender"]["value"]
+        api_dict['pred_age'] = round(result["age"])
         if result["expression"]:
-            api_dict['expression'] = result["expression"][0]["value"]
+            api_dict['pred_expression'] = result["expression"][0]["value"]
 
     # predict the celebrity lookalike of the profile picture
     url = "https://luxand-cloud-face-recognition.p.rapidapi.com/photo/celebrity"
@@ -48,7 +48,7 @@ def api(img_profile, img_compare):
     response = requests.request("POST", url, data=payload, headers=headers, params=querystring)
     result = response.json()
     if result['result']:
-        api_dict['celeb'] = result['result'][0]['name']
+        api_dict['pred_celeb'] = result['result'][0]['name']
 
     # Determines if the rest of the user's pictures actually belong to the user
     temp1 = "\"%s\", " * len(img_compare)
