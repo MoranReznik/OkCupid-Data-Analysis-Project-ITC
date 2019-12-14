@@ -2,6 +2,9 @@ import bs4
 import ParseInfo as Pi
 import conf
 import json
+import FindImageUrls
+import Api
+
 
 with open(conf.JSON) as json_file:
     dict_data = json.load(json_file)
@@ -36,6 +39,11 @@ def scrape_profile(driver, profile_id, num_pics):
     # getting and parsing the content of the profile page
     content = driver.page_source
     soup = bs4.BeautifulSoup(content, 'html.parser')
+    # finding the urls of the pictures of the users
+    images_url = FindImageUrls.find_image_url(soup)
+    img_profile = images_url[0]
+    img_compare = images_url[1:]
+    print(Api.api(img_profile, img_compare))
     # finding and getting the data from the page
     age = soup.find(class_="profile-basics-asl-age").get_text()
     location = soup.find(class_="profile-basics-asl-location").get_text().lower()
