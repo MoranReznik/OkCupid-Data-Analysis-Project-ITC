@@ -46,7 +46,7 @@ def parse_info(data, details_temp, dict_data):
 
         # height
         if 'cm' in det:
-            data['height'] = det
+            data['height'] = det.replace('cm', '')
 
         # strings that starts with "looking for" have a special structure so we take care of them here
         elif 'looking for ' in det:

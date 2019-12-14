@@ -34,10 +34,11 @@ def read_database(mysql_cred, information, conditions):
     select = 'SELECT '
     if information:
         all_information = information.copy()
-    else:  # if user want to read all the data, extract the list of all categories to output
+    else:
+        # if user wants to read all the data, extract the list of all categories to output without the id
+        all_information = ['age', 'height', 'location', 'num_pics']
         cur.execute("SHOW TABLES")
         categories = cur.fetchall()
-        all_information = ['age', 'height', 'location', 'num_pics']
         for category in categories:
             all_information += [category[0]]
         all_information.remove('profiles')

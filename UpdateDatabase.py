@@ -50,10 +50,10 @@ def update_database(mysql_cred, profile_data):
 
         # finally: add the rest of the data to the relevant table
         elif column and column != 'profile_id':  # in case column for some reason is an empty list..
-
             if type(values) == str:
                 values = [values]
-            if exists:  # first delete old values and then insert new values (since there may be a different amount of
+            if exists:
+                # first delete old values and then insert new values (since there may be a different amount of
                 # old and new values)
                 sql = ''' DELETE FROM %s WHERE main_id="%s" ''' % (column, main_id)
                 cur.execute(sql)
