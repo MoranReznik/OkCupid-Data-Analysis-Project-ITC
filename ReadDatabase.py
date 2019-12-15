@@ -28,7 +28,8 @@ def read_database(mysql_cred, information, conditions):
     cur = con.cursor()
     cur.execute(''' USE okcupid_project ''')
 
-    profiles_columns = ['age', 'height', 'location', 'num_pics']
+    profiles_columns = ['age', 'height', 'location', 'num_pics', 'pred_gender', 'pred_age', 'pred_expression',
+                      'pred_celeb', 'pred_pics_match']
 
     # SELECT columns
     select = 'SELECT '
@@ -36,7 +37,7 @@ def read_database(mysql_cred, information, conditions):
         all_information = information.copy()
     else:
         # if user wants to read all the data, extract the list of all categories to output without the id
-        all_information = ['age', 'height', 'location', 'num_pics']
+        all_information = profiles_columns.copy()
         cur.execute("SHOW TABLES")
         categories = cur.fetchall()
         for category in categories:

@@ -41,7 +41,7 @@ def scrape_profile(driver, profile_id, num_pics):
     soup = bs4.BeautifulSoup(content, 'html.parser')
     # finding the urls of the pictures of the users
     images_url = FindImageUrls.find_image_url(soup)
-    # sending the pictures to the api for it to predict based on
+    # sending the pictures url to the api for it to predict based on
     img_profile = images_url[0]
     img_compare = tuple(images_url[1:])
     preds = Api.api(img_profile, img_compare)

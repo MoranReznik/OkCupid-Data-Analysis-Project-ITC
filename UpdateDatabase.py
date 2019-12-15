@@ -42,9 +42,12 @@ def update_database(mysql_cred, profile_data):
         cur.execute('SELECT LAST_INSERT_ID()')
         main_id = cur.fetchone()[0]
 
+    profiles_columns = ['age', 'height', 'location', 'num_pics', 'pred_gender', 'pred_age', 'pred_expression',
+                      'pred_celeb', 'pred_pics_match']
+
     for column, values in profile_data.items():
         # next: add the details relevant to the profiles table
-        if column in ['age', 'height', 'location', 'num_pics']:
+        if column in profiles_columns:
             sql = ''' UPDATE profiles SET %s = "%s" WHERE main_id = "%s" ''' % (column, values, main_id)
             cur.execute(sql)
 

@@ -18,11 +18,11 @@ def api(img_profile, img_compare):
 
             Returns
             -------
-            api_dict : dictionary
+            preds : dictionary
                 dictionary that hold the predicted information about the profile
     """
 
-    api_dict = {}
+    preds = {}
 
     # predict the gender, age and facial expression of the profile picture
     url = "https://luxand-cloud-face-recognition.p.rapidapi.com/photo/detect"
@@ -31,12 +31,12 @@ def api(img_profile, img_compare):
                'x-rapidapi-key': "63130e96b1msh90c1eaf79ef5036p11e9cajsndb50d6caa382",
                'content-type': "application/x-www-form-urlencoded"}
     response = requests.request("POST", url, data=payload, headers=headers)
-    if response.json():
-        result = response.json()[0]
-        api_dict['pred_gender'] = result["gender"]["value"]
-        api_dict['pred_age'] = round(result["age"])
-        if result["expression"]:
-            api_dict['pred_expression'] = result["expression"][0]["value"]
+    result_1 = response.json()
+    if result_1:
+        preds['pred_gender'] = result_1[0]["gender"]["value"]
+        preds['pred_age'] = round(result_1[0]["age"])
+        if result_1[0]["expression"]:
+            preds['pred_expression'] = result_1[0]["expression"][0]["value"]
 
     # predict the celebrity lookalike of the profile picture
     url = "https://luxand-cloud-face-recognition.p.rapidapi.com/photo/celebrity"
@@ -46,25 +46,26 @@ def api(img_profile, img_compare):
                'x-rapidapi-key': "63130e96b1msh90c1eaf79ef5036p11e9cajsndb50d6caa382",
                'content-type': "application/x-www-form-urlencoded"}
     response = requests.request("POST", url, data=payload, headers=headers, params=querystring)
-    result = response.json()
-    if result['result']:
-        api_dict['pred_celeb'] = result['result'][0]['name']
+    result_2 = response.json()
+    if result_2:
+        if 'result' in result_2:
+            if result_2['result']:
+                preds['pred_celeb'] = result_2['result'][0]['name']
 
     # Determines if the rest of the user's pictures actually belong to the user
-    temp1 = "\"%s\", " * len(img_compare)
-    temp2 = '[' + temp1[:-2] + ']'
-    temp3 = temp2 % img_compare
-    # temp3 = '["%s", "%s"]' % img_compare
-    url = "https://macgyverapi-face-recognition-with-deep-learning-v1.p.rapidapi.com/"
-    payload = '{"key": "free", "id": "5B3p2r8A", "data": {"known_image": ["%s"], "test_image": %s}}' % \
-              (img_profile, temp3)
-    headers = {'x-rapidapi-host': "macgyverapi-face-recognition-with-deep-learning-v1.p.rapidapi.com",
-               'x-rapidapi-key': "63130e96b1msh90c1eaf79ef5036p11e9cajsndb50d6caa382",
-               'content-type': "application/json",
-               'accept': "application/json"}
-    response = requests.request("POST", url, data=payload, headers=headers)
-    result = response.json()
-    if 'match' in result:
-        api_dict['same'] = result['match']
+    if img_compare:
+        img_compare_string = ('[' + ("\"%s\", " * len(img_compare))[:-2] + ']') % img_compare
+        url = "https://macgyverapi-face-recognition-with-deep-learning-v1.p.rapidapi.com/"
+        payload = '{"key": "free", "id": "5B3p2r8A", "data": {"known_image": ["%s"], "test_image": %s}}' % \
+                  (img_profile, img_compare_string)
+        headers = {'x-rapidapi-host': "macgyverapi-face-recognition-with-deep-learning-v1.p.rapidapi.com",
+                   'x-rapidapi-key': "63130e96b1msh90c1eaf79ef5036p11e9cajsndb50d6caa382",
+                   'content-type': "application/json",
+                   'accept': "application/json"}
+        response = requests.request("POST", url, data=payload, headers=headers)
+        result_3 = response.json()
+        if result_3:
+            if 'match' in result_3:
+                preds['pred_pics_match'] = result_3['match']
 
-    return api_dict
+    return preds

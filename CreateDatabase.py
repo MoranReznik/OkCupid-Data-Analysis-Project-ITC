@@ -32,7 +32,9 @@ cur.execute(''' USE okcupid_project ''')
 
 sql = ''' CREATE TABLE IF NOT EXISTS profiles
 (main_id INT NOT NULL AUTO_INCREMENT, profile_id VARBINARY(255) NOT NULL UNIQUE, age INT DEFAULT NULL, 
-height INT DEFAULT NULL, location VARCHAR(255) DEFAULT NULL, num_pics INT DEFAULT NULL, PRIMARY KEY (main_id)) '''
+height INT DEFAULT NULL, location VARCHAR(255) DEFAULT NULL, num_pics INT DEFAULT NULL, 
+pred_gender VARCHAR(255) DEFAULT NULL, pred_age INT DEFAULT NULL, pred_expression VARCHAR(255) DEFAULT NULL, 
+pred_celeb VARCHAR(255) DEFAULT NULL, pred_pics_match VARCHAR(255) DEFAULT NULL, PRIMARY KEY (main_id)) '''
 cur.execute(sql)
 
 for column in columns:
