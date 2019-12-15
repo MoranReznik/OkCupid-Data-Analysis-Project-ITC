@@ -43,7 +43,7 @@ def update_database(mysql_cred, profile_data):
         main_id = cur.fetchone()[0]
 
     profiles_columns = ['age', 'height', 'location', 'num_pics', 'pred_gender', 'pred_age', 'pred_expression',
-                      'pred_celeb', 'pred_pics_match']
+                        'pred_celeb', 'pred_pics_match']
 
     for column, values in profile_data.items():
         # next: add the details relevant to the profiles table

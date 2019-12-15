@@ -95,9 +95,9 @@ def parse_info(data, details_temp, dict_data):
 
         if 'drink' in det:  # drinks also appears different in dict_data and in the site, so we fix it here
             if "doesn't drink" in det:
-                data['drink'] = 'never drinks'
+                data['drinks'] = 'never drinks'
             elif 'often' in det:
-                data['drink'] = 'drinks often'
+                data['drinks'] = 'drinks often'
 
         if 'open to non-monogamy' in det: # taking care of the special case where the non-monogamy is stated separately
             data['relationship_type'] = 'non-monogamous'

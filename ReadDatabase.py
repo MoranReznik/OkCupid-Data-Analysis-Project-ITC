@@ -29,7 +29,7 @@ def read_database(mysql_cred, information, conditions):
     cur.execute(''' USE okcupid_project ''')
 
     profiles_columns = ['age', 'height', 'location', 'num_pics', 'pred_gender', 'pred_age', 'pred_expression',
-                      'pred_celeb', 'pred_pics_match']
+                        'pred_celeb', 'pred_pics_match']
 
     # SELECT columns
     select = 'SELECT '
