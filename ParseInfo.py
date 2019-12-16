@@ -71,7 +71,6 @@ def parse_info(data, details_temp, dict_data):
                     data['looking_for_gender'] = []
                     data['looking_for_gender'] += ['man']
 
-
             for c in ['long', 'short', 'friends', 'hookups']:
                 if c in det:
                     if 'looking_for_connection' not in data:
@@ -99,7 +98,7 @@ def parse_info(data, details_temp, dict_data):
             elif 'often' in det:
                 data['drinks'] = 'drinks often'
 
-        if 'open to non-monogamy' in det: # taking care of the special case where the non-monogamy is stated separately
+        if 'open to non-monogamy' in det:  # taking care of the special case where the non-monogamy is stated separately
             data['relationship_type'] = 'non-monogamous'
 
     return data
