@@ -47,8 +47,9 @@ it has a lot of optional args.  you can see them all using the help flag in the 
 this will show you only profiles of man in age 20 to 30, the data it will show on this profiles is their location and use of drugs. 
 the --information flags selects the kind of data you will see about the profiles. the other optional flags works like a 'where' clause in sql. 
 #### you can also write the result of the query into a csv file! just use the flag --write_csv name_of_file in read mode!
-	
 
+# *** the API ***
+the scraper is enriched by a n external api, that takes the pictures of a profile and return some predictions on it: the age of the person, the face expression of the person, a similar celeb to that person and is all of the photos belongs to the same person.
 
 # ***PROTECTING THE PRIVECY OF THE USERS***:
 there is no last name in the database - only first name. the only unique identifier - their OkCupid profile id, is encryped.
