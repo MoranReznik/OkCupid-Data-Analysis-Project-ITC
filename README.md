@@ -48,7 +48,7 @@ this will show you only profiles of man in age 20 to 30, the data it will show o
 the --information flags selects the kind of data you will see about the profiles. the other optional flags works like a 'where' clause in sql. 
 #### you can also write the result of the query into a csv file! just use the flag --write_csv name_of_file in read mode!
 
-# *** the API ***
+# the API 
 the scraper is enriched by a n external api, that takes the pictures of a profile and return some predictions on it: the age of the person, the face expression of the person, a similar celeb to that person and is all of the photos belongs to the same person.
 
 # ***PROTECTING THE PRIVECY OF THE USERS***:
