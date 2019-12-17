@@ -9,7 +9,7 @@ PROFILES = {"straight_female": {"user": "itc.proje@gmail.com", "pass": "itc_pass
 HOME_URL = "https://www.okcupid.com/home"
 
 # SiteLogin.py
-CHROME_DRIVER_PATH = "chromedriver.exe"
+CHROME_DRIVER_PATH = {'Windows': "chromedriver.exe", 'Linux': "/usr/bin/chromedriver"}
 LOGIN_URL = "https://www.okcupid.com/login"
 
 # CLIArguments
