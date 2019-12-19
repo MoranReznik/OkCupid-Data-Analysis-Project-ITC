@@ -37,10 +37,11 @@ def site_login(login_details):
         driver.find_element_by_name("username").send_keys(login_details["user"])
         driver.find_element_by_name("password").send_keys(login_details["pass"])
         driver.find_element_by_class_name("login2017-actions-button").send_keys('\n')
-    except selenium.common.exceptions.ElementNotInteractableException:
-        driver.find_elements_by_class_name("login-fields-field")[0].find_element_by_name("username").\
+    except (selenium.common.exceptions.ElementNotInteractableException,
+            selenium.common.exceptions.ElementNotVisibleException):
+        driver.find_elements_by_class_name("login-fields-field")[0].find_element_by_name("username"). \
             send_keys(login_details["user"])
-        driver.find_elements_by_class_name("login-fields-field")[1].find_element_by_name("password").\
+        driver.find_elements_by_class_name("login-fields-field")[1].find_element_by_name("password"). \
             send_keys(login_details["pass"])
         driver.find_element_by_class_name("login-actions-button").send_keys('\n')
     url = driver.current_url
