@@ -1,5 +1,6 @@
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
+import selenium.common
 import time
 import conf
 import platform
@@ -31,9 +32,17 @@ def site_login(login_details):
     driver.get(conf.LOGIN_URL)
 
     # enter the login details
-    driver.find_element_by_name("username").send_keys(login_details["user"])
-    driver.find_element_by_name("password").send_keys(login_details["pass"])
-    driver.find_element_by_class_name("login2017-actions-button").send_keys('\n')
+    # 19/12/19: There are now two different login pages which seem to be chosen randomly..
+    try:
+        driver.find_element_by_name("username").send_keys(login_details["user"])
+        driver.find_element_by_name("password").send_keys(login_details["pass"])
+        driver.find_element_by_class_name("login2017-actions-button").send_keys('\n')
+    except selenium.common.exceptions.ElementNotInteractableException:
+        driver.find_elements_by_class_name("login-fields-field")[0].find_element_by_name("username").\
+            send_keys(login_details["user"])
+        driver.find_elements_by_class_name("login-fields-field")[1].find_element_by_name("password").\
+            send_keys(login_details["pass"])
+        driver.find_element_by_class_name("login-actions-button").send_keys('\n')
     url = driver.current_url
 
     # making sure page is loaded and returning the driver
