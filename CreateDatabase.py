@@ -1,6 +1,5 @@
 # pip install mysql-connector-python
 import mysql.connector
-import json
 import argparse
 import conf
 
@@ -12,16 +11,10 @@ Other categories which have a finite number of options have their own table with
 """
 
 # creating the flags
-parser = argparse.ArgumentParser(description='username and password for the creation of mySQL server')
+parser = argparse.ArgumentParser(description='username and password for the creation of mySQL database')
 parser.add_argument('username', type=str, help='username')
 parser.add_argument('password', type=str, help='password')
 args = parser.parse_args()
-
-with open(conf.JSON) as json_file:
-    columns = list(json.load(json_file).keys())
-
-columns.remove('height')
-columns += ['religion_importance']
 
 con = mysql.connector.connect(
     host='localhost', user=args.username, passwd=args.password, auth_plugin='mysql_native_password')
@@ -30,17 +23,21 @@ cur = con.cursor()
 cur.execute(''' CREATE DATABASE IF NOT EXISTS okcupid_project ''')
 cur.execute(''' USE okcupid_project ''')
 
+columns = ''
+for col in conf.profiles_columns:
+    var = 'VARCHAR(255)'
+    if col in ['age', 'height', 'num_pics', 'pred_age']:
+        var = 'INT'
+    columns += ', %s %s DEFAULT NULL' % (col, var)
+
 sql = ''' CREATE TABLE IF NOT EXISTS profiles
-(main_id INT NOT NULL AUTO_INCREMENT, profile_id VARBINARY(255) NOT NULL UNIQUE, age INT DEFAULT NULL, 
-height INT DEFAULT NULL, location VARCHAR(255) DEFAULT NULL, num_pics INT DEFAULT NULL, 
-pred_gender VARCHAR(255) DEFAULT NULL, pred_age INT DEFAULT NULL, pred_expression VARCHAR(255) DEFAULT NULL, 
-pred_celeb VARCHAR(255) DEFAULT NULL, pred_pics_match VARCHAR(255) DEFAULT NULL, PRIMARY KEY (main_id)) '''
+(main_id INT NOT NULL AUTO_INCREMENT, profile_id VARBINARY(255) NOT NULL UNIQUE %s, PRIMARY KEY (main_id)) ''' % columns
 cur.execute(sql)
 
-for column in columns:
+for table in conf.extra_tables:
     sql = ''' CREATE TABLE IF NOT EXISTS %s (id INT NOT NULL AUTO_INCREMENT, main_id INT NOT NULL, 
     %s VARCHAR(255) DEFAULT NULL, PRIMARY KEY (id), FOREIGN KEY(main_id) REFERENCES profiles(main_id)) ''' \
-          % (column, column)
+          % (table, table)
     cur.execute(sql)
 
 con.commit()

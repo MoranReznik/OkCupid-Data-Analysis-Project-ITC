@@ -1,4 +1,5 @@
 import mysql.connector
+import conf
 
 
 def update_database(mysql_cred, profile_data):
@@ -34,6 +35,9 @@ def update_database(mysql_cred, profile_data):
     cur.execute(sql)
     main_id, exists = cur.fetchone()
 
+    if exists:
+        print('This profiles was already in the database. Updating profile..')
+
     # first: if profile_id does't exist: add the encrypted unique profile_id to the profiles table and extract the PK
     if not exists:
         sql = '''INSERT INTO profiles (Profile_id) VALUES (AES_ENCRYPT("%s","%s"))''' % (profile_id, key)
@@ -42,12 +46,9 @@ def update_database(mysql_cred, profile_data):
         cur.execute('SELECT LAST_INSERT_ID()')
         main_id = cur.fetchone()[0]
 
-    profiles_columns = ['age', 'height', 'location', 'num_pics', 'pred_gender', 'pred_age', 'pred_expression',
-                        'pred_celeb', 'pred_pics_match']
-
     for column, values in profile_data.items():
         # next: add the details relevant to the profiles table
-        if column in profiles_columns:
+        if column in conf.profiles_columns:
             sql = ''' UPDATE profiles SET %s = "%s" WHERE main_id = "%s" ''' % (column, values, main_id)
             cur.execute(sql)
 

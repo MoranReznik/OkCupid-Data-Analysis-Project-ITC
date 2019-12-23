@@ -2,8 +2,8 @@
 SITE_URL = "https://www.okcupid.com"
 
 # Main.py
-PROFILES = {"straight_female": {"user": "itc.proje@gmail.com", "pass": "itc_pass4", "data": {}},
-            "straight_male": {"user": "shirella111@gmail.com", "pass": "itcpass123", "data": {}}}
+PROFILES = {"straight_male": {"user": "shirella111@gmail.com", "pass": "itcpass123", "data": {}},
+            "straight_female": {"user": "itc.proje@gmail.com", "pass": "itc_pass4", "data": {}}}
 
 # ScrapeProfile.py
 HOME_URL = "https://www.okcupid.com/home"
@@ -30,3 +30,10 @@ information_to_show_help = '''what information to scrape from each profile, if a
 
 # json file with all the different ok_cupid option
 JSON = 'choices.json'
+
+# MYSQL database tables and columns
+extra_tables = ['speaks', 'looking_for_connection', 'looking_for_gender']
+profiles_columns = ['age', 'height', 'location', 'num_pics', 'sexual_orientation', 'gender', 'status',
+                    'relationship_type', 'body_type', 'ethnicity', 'politics', 'education', 'religion',
+                    'religion_importance', 'tobacco', 'drinks', 'drugs', 'marijuana', 'kids', 'pets', 'sign', 'diet',
+                    'pred_gender', 'pred_age', 'pred_expression', 'pred_celeb', 'pred_pics_match']
