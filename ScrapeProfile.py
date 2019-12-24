@@ -9,7 +9,8 @@ import Api
 with open(conf.JSON) as json_file:
     dict_data = json.load(json_file)
 
-def scrape_profile(driver, profile_id, num_pics):
+
+def scrape_profile(driver, profile_id, num_pics, api):
     """ Scraping the desired content from the profile page
     and returning the selenium driver and the and the profile's data.
     the data is organized as a dict with the following keys (if there is no data it will be None):
@@ -26,6 +27,9 @@ def scrape_profile(driver, profile_id, num_pics):
 
             num_pics : int
                 the number of pictures the user uploaded of himself (given by the enter_profile function)
+
+            api : boolean
+                boolean to get / not get data from the api
 
             Returns
             -------
@@ -44,7 +48,9 @@ def scrape_profile(driver, profile_id, num_pics):
     # sending the pictures url to the api for it to predict based on
     img_profile = images_url[0]
     img_compare = tuple(images_url[1:])
-    preds = Api.api(img_profile, img_compare)
+    preds = {}
+    if api:
+        preds = Api.api(img_profile, img_compare)
     # finding and getting the data from the page
     age = soup.find(class_="profile-basics-asl-age").get_text()
     location = soup.find(class_="profile-basics-asl-location").get_text().lower()

@@ -18,6 +18,7 @@ def main():
     mode = parameters[0]
 
     if mode in ['print', 'write']:
+        api = parameters[-1]
         num_to_scrape = parameters[1]
         for main_profile_name, login_details in conf.PROFILES.items():
             try:
@@ -33,7 +34,7 @@ def main():
                     profile_driver_unloaded, num_pics, profile_id = EnterProfile.enter_profile(driver)
                     profile_driver_loaded = WaitForProfileToLoad.wait_for_profile_to_load(profile_driver_unloaded)
                     driver, profile_data = Scrape.scrape_profile(
-                        profile_driver_loaded, profile_id, num_pics)
+                        profile_driver_loaded, profile_id, num_pics, api)
                     if mode == 'print':
                         print(profile_data)
                     if mode == 'write':

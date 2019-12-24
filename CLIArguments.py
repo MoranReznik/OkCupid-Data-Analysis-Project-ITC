@@ -29,6 +29,7 @@ def get_cli_arguments():
     parser = argparse.ArgumentParser(description='scrape profiles from OkCupid')
     parser.add_argument('mode', type=str, help=conf.mode_help)
     parser.add_argument('--write_csv', type=str, help='name for csv file the query result will be written to')
+    parser.add_argument('--no_api', action='store_true', help='not using api')
     parser.add_argument('-n', '--num', type=str, help='number of profiles to scrape for each profile type')
     for kind, options in dict_data.items():
         if kind == 'religion':
@@ -117,9 +118,14 @@ def get_cli_arguments():
     if 'connection_type' in conditions:
         conditions['looking_for_connection'] = conditions.pop('connection_type')
 
+    if args.no_api is True:
+        api = False
+    else:
+        api = True
+
     if args.mode == 'read':
         return [args.mode, args.mysqlcreds, conditions, args.information, args.write_csv]
     elif args.mode == 'write':
-        return [args.mode, int(args.num), args.mysqlcreds]
+        return [args.mode, int(args.num), args.mysqlcreds, api]
     else:
-        return [args.mode, int(args.num)]
+        return [args.mode, int(args.num), api]
