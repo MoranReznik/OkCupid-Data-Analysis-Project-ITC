@@ -11,7 +11,7 @@ inline==0.0.1
 kiwisolver==1.1.0
 matplotlib==3.1.2
 mysql-connector-python==8.0.18
-numpy==1.17.4
+numpy==1.22.0
 pandas==0.25.3
 Pillow==6.2.1
 protobuf==3.11.1
